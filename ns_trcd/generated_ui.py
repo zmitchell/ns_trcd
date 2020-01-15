@@ -10,6 +10,7 @@
 
 from PySide2 import QtCore, QtGui, QtWidgets
 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -37,18 +38,26 @@ class Ui_MainWindow(object):
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
         self.live_par_label = QtWidgets.QLabel(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.live_par_label.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.live_par_label.sizePolicy().hasHeightForWidth()
+        )
         self.live_par_label.setSizePolicy(sizePolicy)
         self.live_par_label.setObjectName("live_par_label")
         self.verticalLayout.addWidget(self.live_par_label)
         self.live_par_graph = PlotWidget(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.live_par_graph.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.live_par_graph.sizePolicy().hasHeightForWidth()
+        )
         self.live_par_graph.setSizePolicy(sizePolicy)
         self.live_par_graph.setObjectName("live_par_graph")
         self.verticalLayout.addWidget(self.live_par_graph)
@@ -56,10 +65,14 @@ class Ui_MainWindow(object):
         self.live_perp_label.setObjectName("live_perp_label")
         self.verticalLayout.addWidget(self.live_perp_label)
         self.live_perp_graph = PlotWidget(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.live_perp_graph.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.live_perp_graph.sizePolicy().hasHeightForWidth()
+        )
         self.live_perp_graph.setSizePolicy(sizePolicy)
         self.live_perp_graph.setObjectName("live_perp_graph")
         self.verticalLayout.addWidget(self.live_perp_graph)
@@ -67,10 +80,14 @@ class Ui_MainWindow(object):
         self.live_ref_label.setObjectName("live_ref_label")
         self.verticalLayout.addWidget(self.live_ref_label)
         self.live_ref_graph = PlotWidget(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.live_ref_graph.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.live_ref_graph.sizePolicy().hasHeightForWidth()
+        )
         self.live_ref_graph.setSizePolicy(sizePolicy)
         self.live_ref_graph.setObjectName("live_ref_graph")
         self.verticalLayout.addWidget(self.live_ref_graph)
@@ -78,10 +95,14 @@ class Ui_MainWindow(object):
         self.live_par_da_label.setObjectName("live_par_da_label")
         self.verticalLayout.addWidget(self.live_par_da_label)
         self.live_par_da_graph = PlotWidget(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.live_par_da_graph.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.live_par_da_graph.sizePolicy().hasHeightForWidth()
+        )
         self.live_par_da_graph.setSizePolicy(sizePolicy)
         self.live_par_da_graph.setObjectName("live_par_da_graph")
         self.verticalLayout.addWidget(self.live_par_da_graph)
@@ -89,10 +110,14 @@ class Ui_MainWindow(object):
         self.live_perp_da_label.setObjectName("live_perp_da_label")
         self.verticalLayout.addWidget(self.live_perp_da_label)
         self.live_perp_da_graph = PlotWidget(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.live_perp_da_graph.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.live_perp_da_graph.sizePolicy().hasHeightForWidth()
+        )
         self.live_perp_da_graph.setSizePolicy(sizePolicy)
         self.live_perp_da_graph.setObjectName("live_perp_da_graph")
         self.verticalLayout.addWidget(self.live_perp_da_graph)
@@ -100,10 +125,14 @@ class Ui_MainWindow(object):
         self.live_cd_label.setObjectName("live_cd_label")
         self.verticalLayout.addWidget(self.live_cd_label)
         self.live_cd_graph = PlotWidget(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.live_cd_graph.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.live_cd_graph.sizePolicy().hasHeightForWidth()
+        )
         self.live_cd_graph.setSizePolicy(sizePolicy)
         self.live_cd_graph.setObjectName("live_cd_graph")
         self.verticalLayout.addWidget(self.live_cd_graph)
@@ -172,19 +201,52 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtWidgets.QApplication.translate("MainWindow", "MainWindow", None, -1))
-        self.live_par_label.setText(QtWidgets.QApplication.translate("MainWindow", "Parallel", None, -1))
-        self.live_perp_label.setText(QtWidgets.QApplication.translate("MainWindow", "Perpendicular", None, -1))
-        self.live_ref_label.setText(QtWidgets.QApplication.translate("MainWindow", "Reference", None, -1))
-        self.live_par_da_label.setText(QtWidgets.QApplication.translate("MainWindow", "Parallel - dA", None, -1))
-        self.live_perp_da_label.setText(QtWidgets.QApplication.translate("MainWindow", "Perpendicular - dA", None, -1))
-        self.live_cd_label.setText(QtWidgets.QApplication.translate("MainWindow", "CD", None, -1))
-        self.tabs.setTabText(self.tabs.indexOf(self.live_tab), QtWidgets.QApplication.translate("MainWindow", "Live", None, -1))
-        self.avg_par_da_label.setText(QtWidgets.QApplication.translate("MainWindow", "Parallel", None, -1))
-        self.avg_perp_da_label.setText(QtWidgets.QApplication.translate("MainWindow", "Perpendicular", None, -1))
-        self.avg_cd_label.setText(QtWidgets.QApplication.translate("MainWindow", "CD", None, -1))
-        self.tabs.setTabText(self.tabs.indexOf(self.average_tab), QtWidgets.QApplication.translate("MainWindow", "Average", None, -1))
-        self.start_btn.setText(QtWidgets.QApplication.translate("MainWindow", "Start", None, -1))
-        self.stop_btn.setText(QtWidgets.QApplication.translate("MainWindow", "Stop", None, -1))
+        MainWindow.setWindowTitle(
+            QtWidgets.QApplication.translate("MainWindow", "MainWindow", None, -1)
+        )
+        self.live_par_label.setText(
+            QtWidgets.QApplication.translate("MainWindow", "Parallel", None, -1)
+        )
+        self.live_perp_label.setText(
+            QtWidgets.QApplication.translate("MainWindow", "Perpendicular", None, -1)
+        )
+        self.live_ref_label.setText(
+            QtWidgets.QApplication.translate("MainWindow", "Reference", None, -1)
+        )
+        self.live_par_da_label.setText(
+            QtWidgets.QApplication.translate("MainWindow", "Parallel - dA", None, -1)
+        )
+        self.live_perp_da_label.setText(
+            QtWidgets.QApplication.translate(
+                "MainWindow", "Perpendicular - dA", None, -1
+            )
+        )
+        self.live_cd_label.setText(
+            QtWidgets.QApplication.translate("MainWindow", "CD", None, -1)
+        )
+        self.tabs.setTabText(
+            self.tabs.indexOf(self.live_tab),
+            QtWidgets.QApplication.translate("MainWindow", "Live", None, -1),
+        )
+        self.avg_par_da_label.setText(
+            QtWidgets.QApplication.translate("MainWindow", "Parallel", None, -1)
+        )
+        self.avg_perp_da_label.setText(
+            QtWidgets.QApplication.translate("MainWindow", "Perpendicular", None, -1)
+        )
+        self.avg_cd_label.setText(
+            QtWidgets.QApplication.translate("MainWindow", "CD", None, -1)
+        )
+        self.tabs.setTabText(
+            self.tabs.indexOf(self.average_tab),
+            QtWidgets.QApplication.translate("MainWindow", "Average", None, -1),
+        )
+        self.start_btn.setText(
+            QtWidgets.QApplication.translate("MainWindow", "Start", None, -1)
+        )
+        self.stop_btn.setText(
+            QtWidgets.QApplication.translate("MainWindow", "Stop", None, -1)
+        )
+
 
 from pyqtgraph import PlotWidget
