@@ -314,7 +314,7 @@
               <item row="0" column="1">
                <widget class="QLineEdit" name="instr_name">
                 <property name="text">
-                 <string>TCPIP::192168.20.4::gpib0,1::INSTR</string>
+                 <string>TCPIP::192.168.20.4::gpib0,1::INSTR</string>
                 </property>
                </widget>
               </item>
