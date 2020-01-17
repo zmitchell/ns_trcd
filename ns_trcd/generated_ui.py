@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'ns_app.ui',
 # licensing of 'ns_app.ui' applies.
 #
-# Created: Fri Jan 17 12:33:24 2020
+# Created: Fri Jan 17 13:51:04 2020
 #      by: pyside2-uic  running on PySide2 5.12.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -125,7 +125,7 @@ class Ui_MainWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName("scrollArea_2")
         self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 751, 1139))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 724, 1139))
         self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
         self.verticalLayout_8 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_8.setObjectName("verticalLayout_8")
@@ -239,7 +239,7 @@ class Ui_MainWindow(object):
         self.avg_da_cd_label.setText(QtWidgets.QApplication.translate("MainWindow", "CD", None, -1))
         self.tabs.setTabText(self.tabs.indexOf(self.average_tab), QtWidgets.QApplication.translate("MainWindow", "Average", None, -1))
         self.start_btn.setText(QtWidgets.QApplication.translate("MainWindow", "Start", None, -1))
-        self.instr_name.setText(QtWidgets.QApplication.translate("MainWindow", "TCPIP::192168.20.4::gpib0,1::INSTR", None, -1))
+        self.instr_name.setText(QtWidgets.QApplication.translate("MainWindow", "TCPIP::192.168.20.4::gpib0,1::INSTR", None, -1))
         self.stop_btn.setText(QtWidgets.QApplication.translate("MainWindow", "Stop", None, -1))
         self.instr_name_label.setText(QtWidgets.QApplication.translate("MainWindow", "Instrument Name", None, -1))
         self.measurements_label.setText(QtWidgets.QApplication.translate("MainWindow", "Measurements", None, -1))

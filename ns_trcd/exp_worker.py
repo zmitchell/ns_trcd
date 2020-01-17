@@ -1,6 +1,10 @@
+import traceback
+import sys
 import numpy as np
+from pyvisa.errors import VisaIOError
 from PySide2.QtCore import QObject, Signal, Slot, QTimer
 from .common import RawData, POINTS
+from .oscilloscope import Oscilloscope
 
 
 class ExperimentSignals(QObject):
@@ -9,9 +13,12 @@ class ExperimentSignals(QObject):
     new_data : RawData
         Contains the parallel, perpendicular, reference, and shutter traces
         from the oscilloscope. Generated for each acquisition.
+    error : (exctype, value, traceback.format_exc())
+        Emitted when there is an error in the experiment.
     """
 
     new_data = Signal(RawData)
+    error = Signal(tuple)
 
 
 class ExperimentWorker(QObject):
@@ -26,7 +33,7 @@ class ExperimentWorker(QObject):
     oscilloscope.
     """
 
-    def __init__(self):
+    def __init__(self, instr_name):
         super(ExperimentWorker, self).__init__()
         self.signals = ExperimentSignals()
         self.rng = np.random.default_rng()
@@ -34,6 +41,12 @@ class ExperimentWorker(QObject):
         self.timer.setInterval(10)  # in ms
         self.timer.timeout.connect(self.generate)
         self.timer.start()
+        try:
+            self._scope = Oscilloscope(instr_name)
+        except VisaIOError:
+            traceback.print_exc()
+            exctype, excvalue = sys.exc_info()[:2]
+            self.signals.error.emit((exctype, excvalue, traceback.format_exc()))
 
     @Slot()
     def generate(self):
@@ -47,6 +60,7 @@ class ExperimentWorker(QObject):
         self.signals.new_data.emit(data)
 
     def finish(self):
-        """A temporary method to stop the timer.
+        """A temporary method to stop the timer and cleanup VISA resources.
         """
         self.timer.stop()
+        self._scope.cleanup()

@@ -55,7 +55,7 @@ class MainWindow(QMainWindow):
         if self.collecting:
             return
         self.comp_worker = ComputationWorker()
-        self.exp_worker = ExperimentWorker()
+        self.exp_worker = ExperimentWorker(self.ui.instr_name.text())
         self.comp_worker.signals.new_data.connect(self.update_plots)
         self.exp_worker.signals.new_data.connect(self.comp_worker.compute_signals)
         self.comp_worker.moveToThread(self.comp_thread)
