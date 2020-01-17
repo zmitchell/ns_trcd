@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'ns_app.ui',
 # licensing of 'ns_app.ui' applies.
 #
-# Created: Thu Jan 16 17:40:54 2020
+# Created: Fri Jan 17 12:33:24 2020
 #      by: pyside2-uic  running on PySide2 5.12.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,7 +13,7 @@ from PySide2 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(822, 646)
+        MainWindow.resize(795, 652)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -30,7 +30,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 751, 2264))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 724, 2264))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_7.setObjectName("verticalLayout_7")
@@ -214,7 +214,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_6.addLayout(self.horizontalLayout)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 822, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 795, 21))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -239,6 +239,7 @@ class Ui_MainWindow(object):
         self.avg_da_cd_label.setText(QtWidgets.QApplication.translate("MainWindow", "CD", None, -1))
         self.tabs.setTabText(self.tabs.indexOf(self.average_tab), QtWidgets.QApplication.translate("MainWindow", "Average", None, -1))
         self.start_btn.setText(QtWidgets.QApplication.translate("MainWindow", "Start", None, -1))
+        self.instr_name.setText(QtWidgets.QApplication.translate("MainWindow", "TCPIP::192168.20.4::gpib0,1::INSTR", None, -1))
         self.stop_btn.setText(QtWidgets.QApplication.translate("MainWindow", "Stop", None, -1))
         self.instr_name_label.setText(QtWidgets.QApplication.translate("MainWindow", "Instrument Name", None, -1))
         self.measurements_label.setText(QtWidgets.QApplication.translate("MainWindow", "Measurements", None, -1))
