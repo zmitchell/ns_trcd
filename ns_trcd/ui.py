@@ -12,12 +12,27 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.ui.start_btn.clicked.connect(self.start_collection)
-        self.ui.stop_btn.clicked.connect(self.stop_collection)
+        self.ui.start_btn.clicked.connect(self.start_collecting)
+        self.ui.stop_btn.clicked.connect(self.stop_collecting)
         self.collecting = False
         self.comp_thread = QThread()
         self.exp_thread = QThread()
         self._store_line_objects()
+
+    def closeEvent(self, event):
+        """Clean up worker threads if the window is closed while collecting data.
+
+        Notes
+        -----
+        This overrides the default closeEvent method of QMainWindow.
+        """
+        if self.collecting:
+            self.exp_worker.finish()
+            self.comp_thread.quit()
+            self.exp_thread.quit()
+            self.comp_thread.wait()
+            self.exp_thread.wait()
+        event.accept()
 
     def _store_line_objects(self):
         """Store references to the lines so the data can be updated later.
@@ -34,7 +49,7 @@ class MainWindow(QMainWindow):
         self.avg_da_cd_line = self.ui.avg_da_cd_graph.plot(*starting_data)
 
     @Slot()
-    def start_collection(self):
+    def start_collecting(self):
         """Begins generating data when the "Start" button is pressed.
         """
         if self.collecting:
@@ -50,7 +65,7 @@ class MainWindow(QMainWindow):
         self.collecting = True
 
     @Slot()
-    def stop_collection(self):
+    def stop_collecting(self):
         """Stops generating data when the "Stop" button is pressed.
         """
         if not self.collecting:
