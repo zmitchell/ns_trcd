@@ -2,8 +2,9 @@ import traceback
 import sys
 import numpy as np
 from pyvisa.errors import VisaIOError
-from PySide2.QtCore import QObject, Signal, Slot, QTimer
-from .common import RawData, POINTS
+from PySide2.QtCore import QObject, Signal, Slot
+from . import common
+from .common import RawData, Preamble
 from .oscilloscope import Oscilloscope
 
 
@@ -18,6 +19,8 @@ class ExperimentSignals(QObject):
     """
 
     new_data = Signal(RawData)
+    preamble = Signal(Preamble)
+    done = Signal()
     error = Signal(tuple)
 
 
@@ -33,34 +36,73 @@ class ExperimentWorker(QObject):
     oscilloscope.
     """
 
-    def __init__(self, instr_name):
+    def __init__(self, mutex, instr_name):
         super(ExperimentWorker, self).__init__()
+        self.mutex = mutex
         self.signals = ExperimentSignals()
-        self.rng = np.random.default_rng()
-        self.timer = QTimer()
-        self.timer.setInterval(10)  # in ms
-        self.timer.timeout.connect(self.generate)
-        self.timer.start()
         try:
             self._scope = Oscilloscope(instr_name)
         except VisaIOError:
             traceback.print_exc()
             exctype, excvalue = sys.exc_info()[:2]
             self.signals.error.emit((exctype, excvalue, traceback.format_exc()))
+            self.mutex.lock()
+            common.SHOULD_STOP = True
+            self.mutex.unlock()
+
+    def _ensure_basic_settings(self):
+        self._scope.set_hi_res_mode()
+        self._scope.set_continuous_acquisition_mode()
+        self._scope.set_waveform_data_source_single_channel(1)
+        self._scope.set_waveform_encoding_ascii()
+        self._scope.set_waveform_start_point(1)
+        self._scope.set_waveform_stop_point(self._scope.get_waveform_length())
+
+    def _send_preamble(self):
+        time_res = self._scope.get_time_resolution()
+        self._scope.set_waveform_data_source_single_channel(1)
+        v_scale_par = self._scope.get_voltage_scale_factor()
+        v_offset_par = self._scope.get_vertical_offset_volts()
+        self._scope.set_waveform_data_source_single_channel(2)
+        v_scale_perp = self._scope.get_voltage_scale_factor()
+        v_offset_perp = self._scope.get_vertical_offset_volts()
+        self._scope.set_waveform_data_source_single_channel(3)
+        v_scale_ref = self._scope.get_voltage_scale_factor()
+        v_offset_ref = self._scope.get_vertical_offset_volts()
+        self._scope.set_waveform_data_source_single_channel(4)
+        v_scale_shutter = self._scope.get_voltage_scale_factor()
+        v_offset_shutter = self._scope.get_vertical_offset_volts()
+        points = self._scope.get_waveform_length()
+        data = Preamble(time_res, v_scale_par, v_offset_par, v_scale_perp, v_offset_perp, v_scale_ref, v_offset_ref, v_scale_shutter, v_offset_shutter, points)
+        self.signals.preamble.emit(data)
 
     @Slot()
-    def generate(self):
-        """A temporary method that generates dummy data on each iteration of the timer.
-        """
-        par = self.rng.random(POINTS)
-        perp = self.rng.random(POINTS)
-        ref = self.rng.random(POINTS)
-        shutter = self.rng.random(POINTS)
-        data = RawData(par, perp, ref, shutter)
-        self.signals.new_data.emit(data)
-
-    def finish(self):
-        """A temporary method to stop the timer and cleanup VISA resources.
-        """
-        self.timer.stop()
+    def measure(self):
+        self.mutex.lock()
+        if common.SHOULD_STOP:
+            return
+        self.mutex.unlock()
+        self._ensure_basic_settings()
+        self._send_preamble()
+        self._scope.acquisition_start()
+        while True:
+            self.mutex.lock()
+            if common.SHOULD_STOP:
+                self.mutex.unlock()
+                break
+            self.mutex.unlock()
+            if self._scope.get_trigger_state() == "ready":
+                self._scope.set_waveform_data_source_single_channel(1)
+                par = self._scope.get_curve()
+                self._scope.set_waveform_data_source_single_channel(2)
+                perp = self._scope.get_curve()
+                self._scope.set_waveform_data_source_single_channel(3)
+                ref = self._scope.get_curve()
+                self._scope.set_waveform_data_source_single_channel(4)
+                shutter = self._scope.get_curve()
+                data = RawData(par, perp, ref, shutter)
+                self.signals.new_data.emit(data)
+        self._scope.acquisition_stop()
         self._scope.cleanup()
+        self.signals.new_data.disconnect()
+        self.signals.done.emit()

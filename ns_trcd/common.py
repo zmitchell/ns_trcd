@@ -1,8 +1,11 @@
 import numpy as np
 from dataclasses import dataclass
+from typing import Union
 
 
 POINTS = 1_000
+
+SHOULD_STOP = False
 
 
 @dataclass
@@ -15,17 +18,15 @@ class PlotData:
     two acquisitions to calculate those signals.
     """
 
-    time: np.ndarray
-    par: np.ndarray
-    perp: np.ndarray
-    ref: np.ndarray
-    da_par: np.ndarray
-    da_perp: np.ndarray
-    da_cd: np.ndarray
-    avg_da_par: np.ndarray
-    avg_da_perp: np.ndarray
-    avg_da_cd: np.ndarray
-    new_da: bool
+    par: np.array
+    perp: np.array
+    ref: np.array
+    da_par: Union[np.array, None]
+    da_perp: Union[np.array, None]
+    da_cd: Union[np.array, None]
+    avg_da_par: Union[np.array, None]
+    avg_da_perp: Union[np.array, None]
+    avg_da_cd: Union[np.array, None]
 
 
 @dataclass
@@ -37,3 +38,19 @@ class RawData:
     perp: np.ndarray
     ref: np.ndarray
     shutter: np.ndarray
+
+
+@dataclass
+class Preamble:
+    """Data needed to reconstruct oscilloscope signals from the raw data.
+    """
+    t_res: float
+    v_scale_par: float
+    v_offset_par: float
+    v_scale_perp: float
+    v_offset_perp: float
+    v_scale_ref: float
+    v_offset_ref: float
+    v_scale_shutter: float
+    v_offset_shutter: float
+    points: int

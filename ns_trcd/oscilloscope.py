@@ -24,6 +24,15 @@ class Oscilloscope:
     def set_continuous_acquisition_mode(self):
         self._scope.write("acquire:stopafter runstop")
 
+    def acquisition_start(self):
+        self._scope.write("acquire:state run")
+
+    def acquisition_stop(self):
+        self._scope.write("acquire:state stop")
+
+    def get_acquisition_state(self):
+        return self._scope.query("acquire:state?").lower().strip()
+
     ####################################################################################
     # Horizontal Parameters
     ####################################################################################
@@ -36,6 +45,9 @@ class Oscilloscope:
 
     def set_horizontal_points(self, points):
         self._scope.write(f"horizontal:resolution {points}")
+
+    def get_time_resolution(self):
+        return float(self._scope.query("wfmoutpre:xincr?"))
 
     ####################################################################################
     # Vertical Parameters
@@ -75,6 +87,15 @@ class Oscilloscope:
     def vertically_center_channel(self, channel):
         avg = self.measure_channel_mean(channel)
         self.set_vertical_offset(channel, avg)
+
+    def get_voltage_scale_factor(self):
+        return float(self._scope.query("wfmoutpre:ymult?"))
+
+    def get_vertical_offset_dig_levels(self):
+        return int(self._scope.query("wfmoutpre:yoff?"))
+
+    def get_vertical_offset_volts(self):
+        return float(self._scope.query("wfmoutpre:yzero?"))
 
     ####################################################################################
     # Measurements
@@ -144,22 +165,10 @@ class Oscilloscope:
         self._scope.write("data:encdg ribinary")
 
     def get_waveform_encoding(self):
-        return self._scope.query("wfmoutpre:encdg?")
+        return self._scope.query("wfmoutpre:encdg?").lower().strip()
 
     def get_waveform_length(self):
         return int(self._scope.query("wfmoutpre:nr_pt?"))
-
-    def get_waveform_time_resolution(self):
-        return float(self._scope.query("wfmoutpre:xincr?"))
-
-    def get_waveform_voltage_scale_factor(self):
-        return float(self._scope.query("wfmoutpre:ymult?"))
-
-    def get_waveform_vertical_offset_dig_levels(self):
-        return int(self._scope.query("wfmoutpre:yoff?"))
-
-    def get_waveform_vertical_offset_volts(self):
-        return float(self._scope.query("wfmoutpre:yzero?"))
 
     ####################################################################################
     # Obtaining Waveforms
@@ -177,6 +186,9 @@ class Oscilloscope:
 
     def set_waveform_stop_point(self, point):
         self._scope.write(f"data:stop {point}")
+
+    def get_curve(self):
+        return self._scope.query_ascii_values("curve?", container=np.array)
 
     def retrieve_waveform(self):
         value_list = self._scope.query_ascii_values("curve?", delay=0.5)
@@ -205,12 +217,8 @@ class Oscilloscope:
     def set_trigger_level(self, volts):
         self._scope.write(f"trigger:a:level {volts}")
 
-    def set_scope_to_run(self):
-        if self._scope.query("trigger:state?").lower() == "save":
-            self._scope.write("acq:state run")
-
     def get_trigger_state(self):
-        return self._scope.query("trigger:state?").lower()
+        return self._scope.query("trigger:state?").lower().strip()
 
     def wait_until_triggered(self):
         while self.get_trigger_state() != "save":
