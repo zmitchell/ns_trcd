@@ -136,7 +136,7 @@ class Oscilloscope:
         self._scope.write("measurement:immed:type low")
 
     def get_immediate_measurement_value(self):
-        return float(self._scope.write("measurement:immed:value?"))
+        return float(self._scope.query("measurement:immed:value?"))
 
     def measure_channel_mean(self, channel):
         self.add_immediate_mean_measurement(channel)

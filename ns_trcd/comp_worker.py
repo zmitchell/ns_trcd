@@ -102,14 +102,11 @@ class ComputationWorker(QObject):
         New dA traces are only generated on every other acquisition since you
         need measurements with and without the pump in order to calculate dA.
         """
-        print("comp: begin")
         par = data.par * self.v_scale_par + self.v_offset_par
         perp = data.perp * self.v_scale_perp + self.v_offset_perp
         ref = data.ref * self.v_scale_ref + self.v_offset_ref
         shutter = data.shutter * self.v_scale_shutter + self.v_offset_shutter
         has_pump = np.mean(shutter) > 2.5
-        print(f"comp: shutter mean: {np.mean(shutter)}")
-        print(f"comp: has pump: {has_pump}")
         # If we got a "with pump" curve when we already had one (or vice versa), then
         # something went wrong and we got out of sequence. Clear what data we already
         # had stored, and store the most current data.
@@ -118,14 +115,12 @@ class ComputationWorker(QObject):
             self.with_pump = MeasurementData(par, perp, ref)
             self.without_pump = None
         elif has_pump:
-            print("comp: storing with_pump")
             self.with_pump = MeasurementData(par, perp, ref)
         if (not has_pump) and (self.without_pump is not None):
             print("comp: replacing without_pump")
             self.without_pump = MeasurementData(par, perp, ref)
             self.with_pump = None
         elif (not has_pump):
-            print("comp: storing without_pump")
             self.without_pump = MeasurementData(par, perp, ref)
         # Compute the dA signals if we have both required sets of data
         if (self.with_pump is not None) and (self.without_pump is not None):
@@ -158,7 +153,6 @@ class ComputationWorker(QObject):
                 self.avg_da_par,
                 self.avg_da_perp,
                 self.avg_da_cd)
-            print(da_par)
             self.signals.new_data.emit(plot_data)
             self.with_pump = None
             self.without_pump = None
@@ -178,5 +172,3 @@ class ComputationWorker(QObject):
                 None,
                 None)
             self.signals.new_data.emit(plot_data)
-            # self.with_pump = None
-            # self.without_pump = None

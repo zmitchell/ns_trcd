@@ -40,6 +40,7 @@ class ExperimentWorker(QObject):
         super(ExperimentWorker, self).__init__()
         self.mutex = mutex
         self.signals = ExperimentSignals()
+        self.prev_had_pump = None
         try:
             self._scope = Oscilloscope(instr_name)
         except VisaIOError:
@@ -57,6 +58,7 @@ class ExperimentWorker(QObject):
         self._scope.set_waveform_encoding_ascii()
         self._scope.set_waveform_start_point(1)
         self._scope.set_waveform_stop_point(self._scope.get_waveform_length())
+        self._scope.add_immediate_mean_measurement(4)
 
     def _send_preamble(self):
         time_res = self._scope.get_time_resolution()
@@ -92,16 +94,25 @@ class ExperimentWorker(QObject):
                 break
             self.mutex.unlock()
             if self._scope.get_trigger_state() == "ready":
-                self._scope.set_waveform_data_source_single_channel(1)
-                par = self._scope.get_curve()
-                self._scope.set_waveform_data_source_single_channel(2)
-                perp = self._scope.get_curve()
-                self._scope.set_waveform_data_source_single_channel(3)
-                ref = self._scope.get_curve()
-                self._scope.set_waveform_data_source_single_channel(4)
-                shutter = self._scope.get_curve()
-                data = RawData(par, perp, ref, shutter)
-                self.signals.new_data.emit(data)
+                has_pump = self._scope.get_immediate_measurement_value() > 2.5
+                if self.prev_had_pump is None:
+                    self.prev_had_pump = not has_pump
+                if has_pump and self.prev_had_pump:
+                    continue
+                elif (not has_pump) and (not self.prev_had_pump):
+                    continue
+                else:
+                    self._scope.set_waveform_data_source_single_channel(1)
+                    par = self._scope.get_curve()
+                    self._scope.set_waveform_data_source_single_channel(2)
+                    perp = self._scope.get_curve()
+                    self._scope.set_waveform_data_source_single_channel(3)
+                    ref = self._scope.get_curve()
+                    self._scope.set_waveform_data_source_single_channel(4)
+                    shutter = self._scope.get_curve()
+                    data = RawData(par, perp, ref, shutter)
+                    self.signals.new_data.emit(data)
+                    self.prev_had_pump = has_pump
         self._scope.acquisition_stop()
         self._scope.cleanup()
         self.signals.new_data.disconnect()
