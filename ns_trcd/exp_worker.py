@@ -71,11 +71,8 @@ class ExperimentWorker(QObject):
         self._scope.set_waveform_data_source_single_channel(3)
         v_scale_ref = self._scope.get_voltage_scale_factor()
         v_offset_ref = self._scope.get_vertical_offset_volts()
-        self._scope.set_waveform_data_source_single_channel(4)
-        v_scale_shutter = self._scope.get_voltage_scale_factor()
-        v_offset_shutter = self._scope.get_vertical_offset_volts()
         points = self._scope.get_waveform_length()
-        data = Preamble(time_res, v_scale_par, v_offset_par, v_scale_perp, v_offset_perp, v_scale_ref, v_offset_ref, v_scale_shutter, v_offset_shutter, points)
+        data = Preamble(time_res, v_scale_par, v_offset_par, v_scale_perp, v_offset_perp, v_scale_ref, v_offset_ref, points)
         self.signals.preamble.emit(data)
 
     @Slot()
@@ -108,9 +105,7 @@ class ExperimentWorker(QObject):
                     perp = self._scope.get_curve()
                     self._scope.set_waveform_data_source_single_channel(3)
                     ref = self._scope.get_curve()
-                    self._scope.set_waveform_data_source_single_channel(4)
-                    shutter = self._scope.get_curve()
-                    data = RawData(par, perp, ref, shutter)
+                    data = RawData(par, perp, ref, has_pump)
                     self.signals.new_data.emit(data)
                     self.prev_had_pump = has_pump
         self._scope.acquisition_stop()

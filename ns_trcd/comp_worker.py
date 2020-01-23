@@ -74,11 +74,9 @@ class ComputationWorker(QObject):
         self.v_offset_par = preamble.v_offset_par
         self.v_offset_perp = preamble.v_offset_perp
         self.v_offset_ref = preamble.v_offset_ref
-        self.v_offset_shutter = preamble.v_offset_shutter
         self.v_scale_par = preamble.v_scale_par
         self.v_scale_perp = preamble.v_scale_perp
         self.v_scale_ref = preamble.v_scale_ref
-        self.v_scale_shutter = preamble.v_scale_shutter
         self.points = preamble.points
         time_values = self.t_res * np.arange(self.points)
         self.signals.time_axis.emit(time_values)
@@ -105,22 +103,18 @@ class ComputationWorker(QObject):
         par = data.par * self.v_scale_par + self.v_offset_par
         perp = data.perp * self.v_scale_perp + self.v_offset_perp
         ref = data.ref * self.v_scale_ref + self.v_offset_ref
-        shutter = data.shutter * self.v_scale_shutter + self.v_offset_shutter
-        has_pump = np.mean(shutter) > 2.5
         # If we got a "with pump" curve when we already had one (or vice versa), then
         # something went wrong and we got out of sequence. Clear what data we already
         # had stored, and store the most current data.
-        if has_pump and (self.with_pump is not None):
-            print("comp: replacing with_pump")
+        if data.has_pump and (self.with_pump is not None):
             self.with_pump = MeasurementData(par, perp, ref)
             self.without_pump = None
-        elif has_pump:
+        elif data.has_pump:
             self.with_pump = MeasurementData(par, perp, ref)
-        if (not has_pump) and (self.without_pump is not None):
-            print("comp: replacing without_pump")
+        if (not data.has_pump) and (self.without_pump is not None):
             self.without_pump = MeasurementData(par, perp, ref)
             self.with_pump = None
-        elif (not has_pump):
+        elif (not data.has_pump):
             self.without_pump = MeasurementData(par, perp, ref)
         # Compute the dA signals if we have both required sets of data
         if (self.with_pump is not None) and (self.without_pump is not None):

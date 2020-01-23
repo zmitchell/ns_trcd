@@ -37,7 +37,7 @@ class RawData:
     par: np.ndarray
     perp: np.ndarray
     ref: np.ndarray
-    shutter: np.ndarray
+    has_pump: bool
 
 
 @dataclass
@@ -51,6 +51,4 @@ class Preamble:
     v_offset_perp: float
     v_scale_ref: float
     v_offset_ref: float
-    v_scale_shutter: float
-    v_offset_shutter: float
     points: int
