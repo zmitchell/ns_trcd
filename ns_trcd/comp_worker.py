@@ -41,6 +41,7 @@ class ComputationWorker(QObject):
 
     def __init__(self, mutex, num_measurements):
         super(ComputationWorker, self).__init__()
+        self.mutex = mutex
         self.signals = ComputationSignals()
         self.exiting = False
         self.count = 0
@@ -119,7 +120,6 @@ class ComputationWorker(QObject):
         # Compute the dA signals if we have both required sets of data
         if (self.with_pump is not None) and (self.without_pump is not None):
             self.count += 1
-            print(f"comp: count={self.count}")
             da_par = -np.log10(
                 np.divide(
                     np.divide(self.with_pump.par, self.with_pump.ref),
