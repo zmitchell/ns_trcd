@@ -104,39 +104,15 @@ class ComputationWorker(QObject):
         par = data.par * self.v_scale_par + self.v_offset_par
         perp = data.perp * self.v_scale_perp + self.v_offset_perp
         ref = data.ref * self.v_scale_ref + self.v_offset_ref
-        # If we got a "with pump" curve when we already had one (or vice versa), then
-        # something went wrong and we got out of sequence. Clear what data we already
-        # had stored, and store the most current data.
-        if data.has_pump and (self.with_pump is not None):
+        if data.has_pump:
             self.with_pump = MeasurementData(par, perp, ref)
-            self.without_pump = None
-        elif data.has_pump:
-            self.with_pump = MeasurementData(par, perp, ref)
-        if (not data.has_pump) and (self.without_pump is not None):
-            self.without_pump = MeasurementData(par, perp, ref)
-            self.with_pump = None
-        elif (not data.has_pump):
+        else:
             self.without_pump = MeasurementData(par, perp, ref)
         # Compute the dA signals if we have both required sets of data
         if (self.with_pump is not None) and (self.without_pump is not None):
             self.count += 1
-            da_par = -np.log10(
-                np.divide(
-                    np.divide(self.with_pump.par, self.with_pump.ref),
-                    np.divide(self.without_pump.par, self.without_pump.ref)))
-            da_perp = -np.log10(
-                np.divide(
-                    np.divide(self.with_pump.perp, self.with_pump.ref),
-                    np.divide(self.without_pump.perp, self.without_pump.ref)))
-            da_cd = (4 / 2.3) * (np.divide(self.with_pump.perp, self.with_pump.par) - np.divide(self.without_pump.perp, self.without_pump.par))
-            if self.count == 1:
-                self.avg_da_par = da_par
-                self.avg_da_perp = da_perp
-                self.avg_da_cd = da_cd
-            else:
-                self.avg_da_par = (self.count - 1) / (self.count) * self.avg_da_par + 1 / self.count * da_par
-                self.avg_da_perp = (self.count - 1) / (self.count) * self.avg_da_perp + 1 / self.count * da_perp
-                self.avg_da_cd = (self.count - 1) / (self.count) * self.avg_da_cd + 1 / self.count * da_cd
+            da_par, da_perp, da_cd = self.compute_da()
+            self.update_averages(da_par, da_perp, da_cd)
             plot_data = PlotData(
                 par,
                 perp,
@@ -166,3 +142,25 @@ class ComputationWorker(QObject):
                 None,
                 None)
             self.signals.new_data.emit(plot_data)
+
+    def compute_da(self):
+        da_par = -np.log10(
+            np.divide(
+                np.divide(self.with_pump.par, self.with_pump.ref),
+                np.divide(self.without_pump.par, self.without_pump.ref)))
+        da_perp = -np.log10(
+            np.divide(
+                np.divide(self.with_pump.perp, self.with_pump.ref),
+                np.divide(self.without_pump.perp, self.without_pump.ref)))
+        da_cd = (4 / 2.3) * (np.divide(self.with_pump.perp, self.with_pump.par) - np.divide(self.without_pump.perp, self.without_pump.par))
+        return da_par, da_perp, da_cd
+
+    def update_averages(self, par, perp, cd):
+        if self.count == 1:
+            self.avg_da_par = par
+            self.avg_da_perp = perp
+            self.avg_da_cd = cd
+        else:
+            self.avg_da_par = (self.count - 1) / (self.count) * self.avg_da_par + 1 / self.count * par
+            self.avg_da_perp = (self.count - 1) / (self.count) * self.avg_da_perp + 1 / self.count * perp
+            self.avg_da_cd = (self.count - 1) / (self.count) * self.avg_da_cd + 1 / self.count * cd
