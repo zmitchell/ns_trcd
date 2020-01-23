@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>795</width>
+    <width>829</width>
     <height>652</height>
    </rect>
   </property>
@@ -37,7 +37,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>724</width>
+               <width>683</width>
                <height>2264</height>
               </rect>
              </property>
@@ -211,7 +211,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>724</width>
+               <width>683</width>
                <height>1139</height>
               </rect>
              </property>
@@ -305,9 +305,30 @@
             <item>
              <layout class="QGridLayout" name="gridLayout">
               <item row="2" column="1">
-               <widget class="QPushButton" name="start_btn">
+               <widget class="QCheckBox" name="save_data_checkbox">
                 <property name="text">
-                 <string>Start</string>
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>Save Data</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_2">
+                <property name="text">
+                 <string>Save Location</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QPushButton" name="reset_avg_btn">
+                <property name="text">
+                 <string>Reset Averages</string>
                 </property>
                </widget>
               </item>
@@ -315,16 +336,6 @@
                <widget class="QLineEdit" name="instr_name">
                 <property name="text">
                  <string>TCPIP::192.168.20.4::gpib0,1::INSTR</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QPushButton" name="stop_btn">
-                <property name="text">
-                 <string>Stop</string>
-                </property>
-                <property name="flat">
-                 <bool>false</bool>
                 </property>
                </widget>
               </item>
@@ -350,7 +361,24 @@
                 <property name="maximum">
                  <number>1000000</number>
                 </property>
+                <property name="value">
+                 <number>5</number>
+                </property>
                </widget>
+              </item>
+              <item row="3" column="1">
+               <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <item>
+                 <widget class="QLineEdit" name="save_loc"/>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="save_loc_browse_btn">
+                  <property name="text">
+                   <string>Browse</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </item>
@@ -387,7 +415,58 @@
        </widget>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_5"/>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QLabel" name="measurement_counter_label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>14</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>0/0</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="start_btn">
+          <property name="text">
+           <string>Start</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="stop_btn">
+          <property name="text">
+           <string>Stop</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>
@@ -398,7 +477,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>795</width>
+     <width>829</width>
      <height>21</height>
     </rect>
    </property>
