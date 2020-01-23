@@ -72,7 +72,16 @@ class ExperimentWorker(QObject):
         v_scale_ref = self._scope.get_voltage_scale_factor()
         v_offset_ref = self._scope.get_vertical_offset_volts()
         points = self._scope.get_waveform_length()
-        data = Preamble(time_res, v_scale_par, v_offset_par, v_scale_perp, v_offset_perp, v_scale_ref, v_offset_ref, points)
+        data = Preamble(
+            time_res,
+            v_scale_par,
+            v_offset_par,
+            v_scale_perp,
+            v_offset_perp,
+            v_scale_ref,
+            v_offset_ref,
+            points,
+        )
         self.signals.preamble.emit(data)
 
     @Slot()

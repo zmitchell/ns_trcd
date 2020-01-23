@@ -44,6 +44,7 @@ class RawData:
 class Preamble:
     """Data needed to reconstruct oscilloscope signals from the raw data.
     """
+
     t_res: float
     v_scale_par: float
     v_offset_par: float
