@@ -1,5 +1,7 @@
+import shutil
 import numpy as np
 from dataclasses import dataclass
+from pathlib import Path
 from PySide2.QtCore import QObject, Signal, Slot
 from . import common
 from .common import PlotData, RawData, Preamble, POINTS
@@ -40,18 +42,23 @@ class ComputationWorker(QObject):
     worker.
     """
 
-    def __init__(self, mutex, num_measurements):
+    def __init__(self, mutex, num_measurements, save, save_dir=None):
         super(ComputationWorker, self).__init__()
         self.mutex = mutex
         self.signals = ComputationSignals()
-        self.exiting = False
+        self.save = save
+        if save:
+            self.save_dir = Path(save_dir)
+            self._clear_save_dir()
+        else:
+            self.save_dir = None
         self.count = 0
+        self.average_count = 0
+        self.should_reset_averages = False
         self.max_measurements = num_measurements
         self.avg_da_par = np.zeros(POINTS)
         self.avg_da_perp = np.zeros(POINTS)
         self.avg_da_cd = np.zeros(POINTS)
-        self.should_reset_averages = False
-        self.average_count = 0
         self.with_pump = None
         self.without_pump = None
         self.t_res = None
@@ -130,6 +137,8 @@ class ComputationWorker(QObject):
                 self.avg_da_cd,
             )
             self.signals.new_data.emit(plot_data)
+            if self.save:
+                self._save_measurement(da_par, da_perp, da_cd)
             self.with_pump = None
             self.without_pump = None
             if self.count >= self.max_measurements:
@@ -184,3 +193,34 @@ class ComputationWorker(QObject):
     @Slot()
     def reset_averages(self):
         self.should_reset_averages = True
+
+    def _clear_save_dir(self):
+        """Delete the contents of the save directory.
+        """
+        for item in Path(self.save_dir).iterdir():
+            if item.is_dir():
+                shutil.rmtree(item)
+            else:
+                item.unlink()
+
+    def _save_measurement(self, da_par, da_perp, da_cd):
+        meas_dir = self.save_dir / f"{self.count}"
+        meas_dir.mkdir()
+        with_pump_par_file = meas_dir / "with_pump_par.npy"
+        with_pump_perp_file = meas_dir / "with_pump_perp.npy"
+        with_pump_ref_file = meas_dir / "with_pump_ref.npy"
+        without_pump_par_file = meas_dir / "without_pump_par.npy"
+        without_pump_perp_file = meas_dir / "without_pump_perp.npy"
+        without_pump_ref_file = meas_dir / "without_pump_ref.npy"
+        da_par_file = meas_dir / "da_par.npy"
+        da_perp_file = meas_dir / "da_perp.npy"
+        da_cd_file = meas_dir / "da_cd.npy"
+        np.save(with_pump_par_file, self.with_pump.par)
+        np.save(with_pump_perp_file, self.with_pump.perp)
+        np.save(with_pump_ref_file, self.with_pump.ref)
+        np.save(without_pump_par_file, self.without_pump.par)
+        np.save(without_pump_perp_file, self.without_pump.perp)
+        np.save(without_pump_ref_file, self.without_pump.ref)
+        np.save(da_par_file, da_par)
+        np.save(da_perp_file, da_perp)
+        np.save(da_cd_file, da_cd)

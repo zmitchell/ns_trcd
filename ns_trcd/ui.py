@@ -105,7 +105,17 @@ class MainWindow(QMainWindow):
         if should_save and not self._saving_should_proceed():
             return
         common.SHOULD_STOP = False
-        self.comp_worker = ComputationWorker(self.mutex, self.ui.measurements.value())
+        if should_save:
+            self.comp_worker = ComputationWorker(
+                self.mutex,
+                self.ui.measurements.value(),
+                save=True,
+                save_dir=self.save_data_dir,
+            )
+        else:
+            self.comp_worker = ComputationWorker(
+                self.mutex, self.ui.measurements.value(), save=False
+            )
         self.exp_worker = ExperimentWorker(self.mutex, self.ui.instr_name.text())
         self._connect_worker_signals()
         self.comp_worker.moveToThread(self.comp_thread)
