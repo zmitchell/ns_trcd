@@ -1,6 +1,5 @@
 import traceback
 import sys
-import numpy as np
 from pyvisa.errors import VisaIOError
 from PySide2.QtCore import QObject, Signal, Slot
 from . import common

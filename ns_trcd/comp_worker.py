@@ -7,6 +7,9 @@ from . import common
 from .common import PlotData, RawData, Preamble, POINTS
 
 
+np.seterr(invalid="raise", divide="raise")
+
+
 @dataclass
 class MeasurementData:
     par: np.array
@@ -150,18 +153,36 @@ class ComputationWorker(QObject):
             self.signals.new_data.emit(plot_data)
 
     def compute_da(self):
-        da_par = -np.log10(
-            np.divide(
-                np.divide(self.with_pump.par, self.with_pump.ref),
-                np.divide(self.without_pump.par, self.without_pump.ref),
-            )
-        )
-        da_perp = -np.log10(
-            np.divide(
-                np.divide(self.with_pump.perp, self.with_pump.ref),
-                np.divide(self.without_pump.perp, self.without_pump.ref),
-            )
-        )
+        with np.errstate(all="raise"):
+            try:
+                da_par = -np.log10(
+                    np.divide(
+                        np.divide(self.with_pump.par, self.with_pump.ref),
+                        np.divide(self.without_pump.par, self.without_pump.ref),
+                    )
+                )
+                da_perp = -np.log10(
+                    np.divide(
+                        np.divide(self.with_pump.perp, self.with_pump.ref),
+                        np.divide(self.without_pump.perp, self.without_pump.ref),
+                    )
+                )
+            except FloatingPointError:
+                print("err")
+                self.with_pump.ref[self.with_pump.ref == 0] = 1e-12
+                self.without_pump.ref[self.without_pump.ref == 0] = 1e-12
+                da_par = -np.log10(
+                    np.divide(
+                        np.divide(self.with_pump.par, self.with_pump.ref),
+                        np.divide(self.without_pump.par, self.without_pump.ref),
+                    )
+                )
+                da_perp = -np.log10(
+                    np.divide(
+                        np.divide(self.with_pump.perp, self.with_pump.ref),
+                        np.divide(self.without_pump.perp, self.without_pump.ref),
+                    )
+                )
         da_cd = (4 / 2.3) * (
             np.divide(self.with_pump.perp, self.with_pump.par)
             - np.divide(self.without_pump.perp, self.without_pump.par)
