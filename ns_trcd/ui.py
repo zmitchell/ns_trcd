@@ -51,7 +51,7 @@ class MainWindow(QMainWindow):
         # Save data controls
         self.ui.save_data_checkbox.stateChanged.connect(self.save_loc_set_state)
         self.ui.save_loc_browse_btn.clicked.connect(self.get_save_location)
-        pass
+        self.ui.stop_pt_checkbox.stateChanged.connect(self.stop_pt_set_state)
 
     def closeEvent(self, event):
         """Clean up worker threads if the window is closed while collecting data.
@@ -83,14 +83,28 @@ class MainWindow(QMainWindow):
 
     def _set_plot_mouse_mode(self):
         self.ui.live_par_graph.getPlotItem().getViewBox().setMouseMode(ViewBox.RectMode)
-        self.ui.live_perp_graph.getPlotItem().getViewBox().setMouseMode(ViewBox.RectMode)
+        self.ui.live_perp_graph.getPlotItem().getViewBox().setMouseMode(
+            ViewBox.RectMode
+        )
         self.ui.live_ref_graph.getPlotItem().getViewBox().setMouseMode(ViewBox.RectMode)
-        self.ui.live_da_par_graph.getPlotItem().getViewBox().setMouseMode(ViewBox.RectMode)
-        self.ui.live_da_perp_graph.getPlotItem().getViewBox().setMouseMode(ViewBox.RectMode)
-        self.ui.live_da_cd_graph.getPlotItem().getViewBox().setMouseMode(ViewBox.RectMode)
-        self.ui.avg_da_par_graph.getPlotItem().getViewBox().setMouseMode(ViewBox.RectMode)
-        self.ui.avg_da_perp_graph.getPlotItem().getViewBox().setMouseMode(ViewBox.RectMode)
-        self.ui.avg_da_cd_graph.getPlotItem().getViewBox().setMouseMode(ViewBox.RectMode)
+        self.ui.live_da_par_graph.getPlotItem().getViewBox().setMouseMode(
+            ViewBox.RectMode
+        )
+        self.ui.live_da_perp_graph.getPlotItem().getViewBox().setMouseMode(
+            ViewBox.RectMode
+        )
+        self.ui.live_da_cd_graph.getPlotItem().getViewBox().setMouseMode(
+            ViewBox.RectMode
+        )
+        self.ui.avg_da_par_graph.getPlotItem().getViewBox().setMouseMode(
+            ViewBox.RectMode
+        )
+        self.ui.avg_da_perp_graph.getPlotItem().getViewBox().setMouseMode(
+            ViewBox.RectMode
+        )
+        self.ui.avg_da_cd_graph.getPlotItem().getViewBox().setMouseMode(
+            ViewBox.RectMode
+        )
 
     @Slot(np.ndarray)
     def set_time_axis(self, values):
@@ -129,7 +143,22 @@ class MainWindow(QMainWindow):
             self.comp_worker = ComputationWorker(
                 self.mutex, self.ui.measurements.value(), save=False
             )
-        self.exp_worker = ExperimentWorker(self.mutex, self.ui.instr_name.text())
+        start_pt = self.ui.start_pt.value()
+        if self.ui.stop_pt_checkbox.isChecked():
+            self.exp_worker = ExperimentWorker(
+                self.mutex, self.ui.instr_name.text(), start_pt=start_pt
+            )
+        else:
+            stop_pt = self.ui.stop_pt.value()
+            if start_pt >= stop_pt:
+                self._tell_start_greater_than_stop()
+                return
+            self.exp_worker = ExperimentWorker(
+                self.mutex,
+                self.ui.instr_name.text(),
+                start_pt=start_pt,
+                stop_pt=stop_pt,
+            )
         self._connect_worker_signals()
         self.comp_worker.moveToThread(self.comp_thread)
         self.exp_worker.moveToThread(self.exp_thread)
@@ -156,24 +185,35 @@ class MainWindow(QMainWindow):
     def _disable_acq_controls(self):
         """Disable certain controls while collecting data.
         """
+        # Disabled
         self.ui.start_btn.setDisabled(True)
         self.ui.instr_name.setDisabled(True)
         self.ui.measurements.setDisabled(True)
         self.ui.save_data_checkbox.setDisabled(True)
         self.ui.save_loc.setDisabled(True)
         self.ui.save_loc_browse_btn.setDisabled(True)
+        self.ui.start_pt.setDisabled(True)
+        self.ui.stop_pt.setDisabled(True)
+        self.ui.stop_pt_checkbox.setDisabled(True)
+        # Enabled
         self.ui.stop_btn.setEnabled(True)
         self.ui.reset_avg_btn.setEnabled(True)
 
     def _enable_acq_controls(self):
         """Enable certain controls after data collection is complete.
         """
+        # Enabled
         self.ui.start_btn.setEnabled(True)
         self.ui.instr_name.setEnabled(True)
         self.ui.measurements.setEnabled(True)
         self.ui.save_data_checkbox.setEnabled(True)
         self.ui.save_loc.setEnabled(True)
         self.ui.save_loc_browse_btn.setEnabled(True)
+        self.ui.start_pt.setEnabled(True)
+        self.ui.stop_pt_checkbox.setEnabled(True)
+        if not self.ui.stop_pt_checkbox.isChecked():
+            self.ui.stop_pt.setEnabled(True)
+        # Disabled
         self.ui.stop_btn.setDisabled(True)
         self.ui.reset_avg_btn.setDisabled(True)
 
@@ -300,3 +340,32 @@ class MainWindow(QMainWindow):
         if would_overwrite and (not self._should_overwrite()):
             return False
         return True
+
+    @Slot(int)
+    def stop_pt_set_state(self, state):
+        """Enable or disable the "Stop Point" controls in response to the checkbox.
+
+        Parameters
+        ----------
+        state : int
+            An integer representing the state of the checkbox.
+
+        Notes
+        -----
+            0 - unchecked
+            2 - checked
+        """
+        if state == 2:
+            self.ui.stop_pt.setDisabled(True)
+        elif state == 0:
+            self.ui.stop_pt.setEnabled(True)
+
+    def _tell_start_greater_than_stop(self):
+        """Tell the user that the current save location isn't valid or doesn't exist.
+        """
+        QMessageBox.critical(
+            self,
+            "Invalid Start/Stop Points",
+            "The Start point must be less than the Stop point.",
+            QMessageBox.StandardButton.Ok,
+        )

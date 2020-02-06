@@ -38,7 +38,7 @@
                <x>0</x>
                <y>0</y>
                <width>683</width>
-               <height>2264</height>
+               <height>2564</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -68,7 +68,7 @@
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>350</height>
+                    <height>400</height>
                    </size>
                   </property>
                  </widget>
@@ -91,7 +91,7 @@
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>350</height>
+                    <height>400</height>
                    </size>
                   </property>
                  </widget>
@@ -114,7 +114,7 @@
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>350</height>
+                    <height>400</height>
                    </size>
                   </property>
                  </widget>
@@ -137,7 +137,7 @@
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>350</height>
+                    <height>400</height>
                    </size>
                   </property>
                  </widget>
@@ -160,7 +160,7 @@
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>350</height>
+                    <height>400</height>
                    </size>
                   </property>
                  </widget>
@@ -183,7 +183,7 @@
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>350</height>
+                    <height>400</height>
                    </size>
                   </property>
                  </widget>
@@ -212,7 +212,7 @@
                <x>0</x>
                <y>0</y>
                <width>683</width>
-               <height>1139</height>
+               <height>1289</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -236,7 +236,7 @@
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>350</height>
+                    <height>400</height>
                    </size>
                   </property>
                  </widget>
@@ -259,7 +259,7 @@
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>350</height>
+                    <height>400</height>
                    </size>
                   </property>
                  </widget>
@@ -282,7 +282,7 @@
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>350</height>
+                    <height>400</height>
                    </size>
                   </property>
                  </widget>
@@ -304,17 +304,17 @@
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
              <layout class="QGridLayout" name="gridLayout">
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="instr_name">
+                <property name="text">
+                 <string>TCPIP::192.168.20.4::gpib0,1::INSTR</string>
+                </property>
+               </widget>
+              </item>
               <item row="2" column="1">
                <widget class="QCheckBox" name="save_data_checkbox">
                 <property name="text">
                  <string/>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label">
-                <property name="text">
-                 <string>Save Data</string>
                 </property>
                </widget>
               </item>
@@ -325,31 +325,17 @@
                 </property>
                </widget>
               </item>
-              <item row="5" column="1">
+              <item row="2" column="0">
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>Save Data</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
                <widget class="QPushButton" name="reset_avg_btn">
                 <property name="text">
                  <string>Reset Averages</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="instr_name">
-                <property name="text">
-                 <string>TCPIP::192.168.20.4::gpib0,1::INSTR</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="instr_name_label">
-                <property name="text">
-                 <string>Instrument Name</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="measurements_label">
-                <property name="text">
-                 <string>Measurements</string>
                 </property>
                </widget>
               </item>
@@ -366,15 +352,90 @@
                 </property>
                </widget>
               </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="measurements_label">
+                <property name="text">
+                 <string>Measurements</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="instr_name_label">
+                <property name="text">
+                 <string>Instrument Name</string>
+                </property>
+               </widget>
+              </item>
               <item row="3" column="1">
                <layout class="QHBoxLayout" name="horizontalLayout_3">
                 <item>
-                 <widget class="QLineEdit" name="save_loc"/>
+                 <widget class="QLineEdit" name="save_loc">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
                 </item>
                 <item>
                  <widget class="QPushButton" name="save_loc_browse_btn">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
                   <property name="text">
                    <string>Browse</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="start_pt_label">
+                <property name="text">
+                 <string>Start Point</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="stop_pt_label">
+                <property name="text">
+                 <string>Stop Point</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QSpinBox" name="start_pt">
+                <property name="minimum">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <number>249999</number>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <layout class="QHBoxLayout" name="horizontalLayout_4">
+                <item>
+                 <widget class="QSpinBox" name="stop_pt">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="minimum">
+                   <number>2</number>
+                  </property>
+                  <property name="maximum">
+                   <number>250000</number>
+                  </property>
+                  <property name="value">
+                   <number>5000</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="stop_pt_checkbox">
+                  <property name="text">
+                   <string>Last</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>

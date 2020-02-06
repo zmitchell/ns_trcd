@@ -35,11 +35,13 @@ class ExperimentWorker(QObject):
     oscilloscope.
     """
 
-    def __init__(self, mutex, instr_name):
+    def __init__(self, mutex, instr_name, start_pt=1, stop_pt=None):
         super(ExperimentWorker, self).__init__()
         self.mutex = mutex
         self.signals = ExperimentSignals()
         self.prev_had_pump = None
+        self.start_pt = start_pt
+        self.stop_pt = stop_pt
         try:
             self._scope = Oscilloscope(instr_name)
         except VisaIOError:
@@ -58,6 +60,12 @@ class ExperimentWorker(QObject):
         self._scope.set_waveform_start_point(1)
         self._scope.set_waveform_stop_point(self._scope.get_waveform_length())
         self._scope.add_immediate_mean_measurement(4)
+        self._scope.set_waveform_start_point(self.start_pt)
+        if self.stop_pt is None:
+            points = self._scope.get_waveform_length()
+            self._scope.set_waveform_stop_point(points)
+        else:
+            self._scope.set_waveform_stop_point(self.stop_pt)
 
     def _send_preamble(self):
         time_res = self._scope.get_time_resolution()
