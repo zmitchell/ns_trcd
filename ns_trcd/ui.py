@@ -1,5 +1,6 @@
 import numpy as np
 from pathlib import Path
+from pyqtgraph import ViewBox
 from PySide2.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 from PySide2.QtCore import QObject, QThread, Signal, Slot, QMutex
 from . import common
@@ -30,6 +31,7 @@ class MainWindow(QMainWindow):
         self._connect_components()
         self._set_initial_widget_states()
         self._store_line_objects()
+        self._set_plot_mouse_mode()
 
     def _set_initial_widget_states(self):
         self.update_max_measurements(self.ui.measurements.value())
@@ -78,6 +80,17 @@ class MainWindow(QMainWindow):
         self.avg_da_par_line = self.ui.avg_da_par_graph.plot(*starting_data)
         self.avg_da_perp_line = self.ui.avg_da_perp_graph.plot(*starting_data)
         self.avg_da_cd_line = self.ui.avg_da_cd_graph.plot(*starting_data)
+
+    def _set_plot_mouse_mode(self):
+        self.ui.live_par_graph.getPlotItem().getViewBox().setMouseMode(ViewBox.RectMode)
+        self.ui.live_perp_graph.getPlotItem().getViewBox().setMouseMode(ViewBox.RectMode)
+        self.ui.live_ref_graph.getPlotItem().getViewBox().setMouseMode(ViewBox.RectMode)
+        self.ui.live_da_par_graph.getPlotItem().getViewBox().setMouseMode(ViewBox.RectMode)
+        self.ui.live_da_perp_graph.getPlotItem().getViewBox().setMouseMode(ViewBox.RectMode)
+        self.ui.live_da_cd_graph.getPlotItem().getViewBox().setMouseMode(ViewBox.RectMode)
+        self.ui.avg_da_par_graph.getPlotItem().getViewBox().setMouseMode(ViewBox.RectMode)
+        self.ui.avg_da_perp_graph.getPlotItem().getViewBox().setMouseMode(ViewBox.RectMode)
+        self.ui.avg_da_cd_graph.getPlotItem().getViewBox().setMouseMode(ViewBox.RectMode)
 
     @Slot(np.ndarray)
     def set_time_axis(self, values):
