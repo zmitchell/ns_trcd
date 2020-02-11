@@ -111,7 +111,7 @@ class MainWindow(QMainWindow):
 
     @Slot(np.ndarray)
     def set_time_axis(self, values):
-        self.time_axis = values
+        self.time_axis = values * 1e6
 
     @Slot(int)
     def update_max_measurements(self, x):
