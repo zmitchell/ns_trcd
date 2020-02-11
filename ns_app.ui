@@ -304,6 +304,27 @@
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
              <layout class="QGridLayout" name="gridLayout">
+              <item row="7" column="1">
+               <widget class="QLineEdit" name="dark_curr_par">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="1">
+               <widget class="QLineEdit" name="dark_curr_ref">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="0">
+               <widget class="QLabel" name="dark_curr_ref_checkbox">
+                <property name="text">
+                 <string>Reference</string>
+                </property>
+               </widget>
+              </item>
               <item row="0" column="1">
                <widget class="QLineEdit" name="instr_name">
                 <property name="text">
@@ -319,20 +340,20 @@
                </widget>
               </item>
               <item row="3" column="0">
-               <widget class="QLabel" name="label_2">
+               <widget class="QLabel" name="save_loc_label">
                 <property name="text">
                  <string>Save Location</string>
                 </property>
                </widget>
               </item>
               <item row="2" column="0">
-               <widget class="QLabel" name="label">
+               <widget class="QLabel" name="save_data_label">
                 <property name="text">
                  <string>Save Data</string>
                 </property>
                </widget>
               </item>
-              <item row="6" column="1">
+              <item row="10" column="1">
                <widget class="QPushButton" name="reset_avg_btn">
                 <property name="text">
                  <string>Reset Averages</string>
@@ -387,10 +408,24 @@
                 </item>
                </layout>
               </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="start_pt_label">
+              <item row="7" column="0">
+               <widget class="QLabel" name="dark_curr_par_label">
                 <property name="text">
-                 <string>Start Point</string>
+                 <string>Parallel</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="0">
+               <widget class="QLabel" name="dark_curr_perp_label">
+                <property name="text">
+                 <string>Perpendicular</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="1">
+               <widget class="QLineEdit" name="dark_curr_perp">
+                <property name="enabled">
+                 <bool>false</bool>
                 </property>
                </widget>
               </item>
@@ -401,13 +436,10 @@
                 </property>
                </widget>
               </item>
-              <item row="4" column="1">
-               <widget class="QSpinBox" name="start_pt">
-                <property name="minimum">
-                 <number>1</number>
-                </property>
-                <property name="maximum">
-                 <number>249999</number>
+              <item row="4" column="0">
+               <widget class="QLabel" name="start_pt_label">
+                <property name="text">
+                 <string>Start Point</string>
                 </property>
                </widget>
               </item>
@@ -440,6 +472,23 @@
                  </widget>
                 </item>
                </layout>
+              </item>
+              <item row="4" column="1">
+               <widget class="QSpinBox" name="start_pt">
+                <property name="minimum">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <number>249999</number>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QCheckBox" name="dark_curr_checkbox">
+                <property name="text">
+                 <string>Dark Current (V)</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
@@ -552,6 +601,35 @@
    <header>pyqtgraph</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabs</tabstop>
+  <tabstop>start_btn</tabstop>
+  <tabstop>stop_btn</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>live_par_graph</tabstop>
+  <tabstop>live_perp_graph</tabstop>
+  <tabstop>live_ref_graph</tabstop>
+  <tabstop>live_da_par_graph</tabstop>
+  <tabstop>live_da_perp_graph</tabstop>
+  <tabstop>live_da_cd_graph</tabstop>
+  <tabstop>scrollArea_2</tabstop>
+  <tabstop>avg_da_par_graph</tabstop>
+  <tabstop>avg_da_perp_graph</tabstop>
+  <tabstop>avg_da_cd_graph</tabstop>
+  <tabstop>instr_name</tabstop>
+  <tabstop>measurements</tabstop>
+  <tabstop>save_data_checkbox</tabstop>
+  <tabstop>save_loc</tabstop>
+  <tabstop>save_loc_browse_btn</tabstop>
+  <tabstop>start_pt</tabstop>
+  <tabstop>stop_pt_checkbox</tabstop>
+  <tabstop>stop_pt</tabstop>
+  <tabstop>dark_curr_checkbox</tabstop>
+  <tabstop>dark_curr_par</tabstop>
+  <tabstop>dark_curr_perp</tabstop>
+  <tabstop>dark_curr_ref</tabstop>
+  <tabstop>reset_avg_btn</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

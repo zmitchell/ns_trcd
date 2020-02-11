@@ -202,8 +202,11 @@ class Oscilloscope:
     # Triggering
     ####################################################################################
 
-    def set_trigger_source(self, channel):
+    def set_trigger_source_channel(self, channel):
         self._scope.write(f"trigger:a:edge:source ch{channel}")
+
+    def set_trigger_source_aux(self):
+        self._scope.write(f"trigger:a:edge:source auxiliary")
 
     def trigger_from_line(self):
         self._scope.write("trigger:a:edge:source line")

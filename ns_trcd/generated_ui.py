@@ -3,13 +3,12 @@
 # Form implementation generated from reading ui file 'ns_app.ui',
 # licensing of 'ns_app.ui' applies.
 #
-# Created: Thu Feb  6 18:12:37 2020
+# Created: Fri Feb  7 17:27:45 2020
 #      by: pyside2-uic  running on PySide2 5.12.6
 #
 # WARNING! All changes made in this file will be lost!
 
 from PySide2 import QtCore, QtGui, QtWidgets
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -38,26 +37,18 @@ class Ui_MainWindow(object):
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
         self.live_par_label = QtWidgets.QLabel(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.live_par_label.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.live_par_label.sizePolicy().hasHeightForWidth())
         self.live_par_label.setSizePolicy(sizePolicy)
         self.live_par_label.setObjectName("live_par_label")
         self.verticalLayout.addWidget(self.live_par_label)
         self.live_par_graph = PlotWidget(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.live_par_graph.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.live_par_graph.sizePolicy().hasHeightForWidth())
         self.live_par_graph.setSizePolicy(sizePolicy)
         self.live_par_graph.setMinimumSize(QtCore.QSize(0, 400))
         self.live_par_graph.setObjectName("live_par_graph")
@@ -66,14 +57,10 @@ class Ui_MainWindow(object):
         self.live_perp_label.setObjectName("live_perp_label")
         self.verticalLayout.addWidget(self.live_perp_label)
         self.live_perp_graph = PlotWidget(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.live_perp_graph.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.live_perp_graph.sizePolicy().hasHeightForWidth())
         self.live_perp_graph.setSizePolicy(sizePolicy)
         self.live_perp_graph.setMinimumSize(QtCore.QSize(0, 400))
         self.live_perp_graph.setObjectName("live_perp_graph")
@@ -82,14 +69,10 @@ class Ui_MainWindow(object):
         self.live_ref_label.setObjectName("live_ref_label")
         self.verticalLayout.addWidget(self.live_ref_label)
         self.live_ref_graph = PlotWidget(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.live_ref_graph.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.live_ref_graph.sizePolicy().hasHeightForWidth())
         self.live_ref_graph.setSizePolicy(sizePolicy)
         self.live_ref_graph.setMinimumSize(QtCore.QSize(0, 400))
         self.live_ref_graph.setObjectName("live_ref_graph")
@@ -98,14 +81,10 @@ class Ui_MainWindow(object):
         self.live_par_da_label.setObjectName("live_par_da_label")
         self.verticalLayout.addWidget(self.live_par_da_label)
         self.live_da_par_graph = PlotWidget(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.live_da_par_graph.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.live_da_par_graph.sizePolicy().hasHeightForWidth())
         self.live_da_par_graph.setSizePolicy(sizePolicy)
         self.live_da_par_graph.setMinimumSize(QtCore.QSize(0, 400))
         self.live_da_par_graph.setObjectName("live_da_par_graph")
@@ -114,14 +93,10 @@ class Ui_MainWindow(object):
         self.live_perp_da_label.setObjectName("live_perp_da_label")
         self.verticalLayout.addWidget(self.live_perp_da_label)
         self.live_da_perp_graph = PlotWidget(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.live_da_perp_graph.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.live_da_perp_graph.sizePolicy().hasHeightForWidth())
         self.live_da_perp_graph.setSizePolicy(sizePolicy)
         self.live_da_perp_graph.setMinimumSize(QtCore.QSize(0, 400))
         self.live_da_perp_graph.setObjectName("live_da_perp_graph")
@@ -130,14 +105,10 @@ class Ui_MainWindow(object):
         self.live_cd_label.setObjectName("live_cd_label")
         self.verticalLayout.addWidget(self.live_cd_label)
         self.live_da_cd_graph = PlotWidget(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.live_da_cd_graph.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.live_da_cd_graph.sizePolicy().hasHeightForWidth())
         self.live_da_cd_graph.setSizePolicy(sizePolicy)
         self.live_da_cd_graph.setMinimumSize(QtCore.QSize(0, 400))
         self.live_da_cd_graph.setObjectName("live_da_cd_graph")
@@ -164,14 +135,10 @@ class Ui_MainWindow(object):
         self.avg_da_par_label.setObjectName("avg_da_par_label")
         self.verticalLayout_3.addWidget(self.avg_da_par_label)
         self.avg_da_par_graph = PlotWidget(self.scrollAreaWidgetContents_2)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.avg_da_par_graph.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.avg_da_par_graph.sizePolicy().hasHeightForWidth())
         self.avg_da_par_graph.setSizePolicy(sizePolicy)
         self.avg_da_par_graph.setMinimumSize(QtCore.QSize(0, 400))
         self.avg_da_par_graph.setObjectName("avg_da_par_graph")
@@ -180,14 +147,10 @@ class Ui_MainWindow(object):
         self.avg_da_perp_label.setObjectName("avg_da_perp_label")
         self.verticalLayout_3.addWidget(self.avg_da_perp_label)
         self.avg_da_perp_graph = PlotWidget(self.scrollAreaWidgetContents_2)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.avg_da_perp_graph.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.avg_da_perp_graph.sizePolicy().hasHeightForWidth())
         self.avg_da_perp_graph.setSizePolicy(sizePolicy)
         self.avg_da_perp_graph.setMinimumSize(QtCore.QSize(0, 400))
         self.avg_da_perp_graph.setObjectName("avg_da_perp_graph")
@@ -196,14 +159,10 @@ class Ui_MainWindow(object):
         self.avg_da_cd_label.setObjectName("avg_da_cd_label")
         self.verticalLayout_3.addWidget(self.avg_da_cd_label)
         self.avg_da_cd_graph = PlotWidget(self.scrollAreaWidgetContents_2)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.avg_da_cd_graph.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.avg_da_cd_graph.sizePolicy().hasHeightForWidth())
         self.avg_da_cd_graph.setSizePolicy(sizePolicy)
         self.avg_da_cd_graph.setMinimumSize(QtCore.QSize(0, 400))
         self.avg_da_cd_graph.setObjectName("avg_da_cd_graph")
@@ -220,6 +179,17 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setObjectName("gridLayout")
+        self.dark_curr_par = QtWidgets.QLineEdit(self.acq_tab)
+        self.dark_curr_par.setEnabled(False)
+        self.dark_curr_par.setObjectName("dark_curr_par")
+        self.gridLayout.addWidget(self.dark_curr_par, 7, 1, 1, 1)
+        self.dark_curr_ref = QtWidgets.QLineEdit(self.acq_tab)
+        self.dark_curr_ref.setEnabled(False)
+        self.dark_curr_ref.setObjectName("dark_curr_ref")
+        self.gridLayout.addWidget(self.dark_curr_ref, 9, 1, 1, 1)
+        self.dark_curr_ref_checkbox = QtWidgets.QLabel(self.acq_tab)
+        self.dark_curr_ref_checkbox.setObjectName("dark_curr_ref_checkbox")
+        self.gridLayout.addWidget(self.dark_curr_ref_checkbox, 9, 0, 1, 1)
         self.instr_name = QtWidgets.QLineEdit(self.acq_tab)
         self.instr_name.setObjectName("instr_name")
         self.gridLayout.addWidget(self.instr_name, 0, 1, 1, 1)
@@ -227,15 +197,15 @@ class Ui_MainWindow(object):
         self.save_data_checkbox.setText("")
         self.save_data_checkbox.setObjectName("save_data_checkbox")
         self.gridLayout.addWidget(self.save_data_checkbox, 2, 1, 1, 1)
-        self.label_2 = QtWidgets.QLabel(self.acq_tab)
-        self.label_2.setObjectName("label_2")
-        self.gridLayout.addWidget(self.label_2, 3, 0, 1, 1)
-        self.label = QtWidgets.QLabel(self.acq_tab)
-        self.label.setObjectName("label")
-        self.gridLayout.addWidget(self.label, 2, 0, 1, 1)
+        self.save_loc_label = QtWidgets.QLabel(self.acq_tab)
+        self.save_loc_label.setObjectName("save_loc_label")
+        self.gridLayout.addWidget(self.save_loc_label, 3, 0, 1, 1)
+        self.save_data_label = QtWidgets.QLabel(self.acq_tab)
+        self.save_data_label.setObjectName("save_data_label")
+        self.gridLayout.addWidget(self.save_data_label, 2, 0, 1, 1)
         self.reset_avg_btn = QtWidgets.QPushButton(self.acq_tab)
         self.reset_avg_btn.setObjectName("reset_avg_btn")
-        self.gridLayout.addWidget(self.reset_avg_btn, 6, 1, 1, 1)
+        self.gridLayout.addWidget(self.reset_avg_btn, 10, 1, 1, 1)
         self.measurements = QtWidgets.QSpinBox(self.acq_tab)
         self.measurements.setMinimum(1)
         self.measurements.setMaximum(1000000)
@@ -259,17 +229,22 @@ class Ui_MainWindow(object):
         self.save_loc_browse_btn.setObjectName("save_loc_browse_btn")
         self.horizontalLayout_3.addWidget(self.save_loc_browse_btn)
         self.gridLayout.addLayout(self.horizontalLayout_3, 3, 1, 1, 1)
-        self.start_pt_label = QtWidgets.QLabel(self.acq_tab)
-        self.start_pt_label.setObjectName("start_pt_label")
-        self.gridLayout.addWidget(self.start_pt_label, 4, 0, 1, 1)
+        self.dark_curr_par_label = QtWidgets.QLabel(self.acq_tab)
+        self.dark_curr_par_label.setObjectName("dark_curr_par_label")
+        self.gridLayout.addWidget(self.dark_curr_par_label, 7, 0, 1, 1)
+        self.dark_curr_perp_label = QtWidgets.QLabel(self.acq_tab)
+        self.dark_curr_perp_label.setObjectName("dark_curr_perp_label")
+        self.gridLayout.addWidget(self.dark_curr_perp_label, 8, 0, 1, 1)
+        self.dark_curr_perp = QtWidgets.QLineEdit(self.acq_tab)
+        self.dark_curr_perp.setEnabled(False)
+        self.dark_curr_perp.setObjectName("dark_curr_perp")
+        self.gridLayout.addWidget(self.dark_curr_perp, 8, 1, 1, 1)
         self.stop_pt_label = QtWidgets.QLabel(self.acq_tab)
         self.stop_pt_label.setObjectName("stop_pt_label")
         self.gridLayout.addWidget(self.stop_pt_label, 5, 0, 1, 1)
-        self.start_pt = QtWidgets.QSpinBox(self.acq_tab)
-        self.start_pt.setMinimum(1)
-        self.start_pt.setMaximum(249999)
-        self.start_pt.setObjectName("start_pt")
-        self.gridLayout.addWidget(self.start_pt, 4, 1, 1, 1)
+        self.start_pt_label = QtWidgets.QLabel(self.acq_tab)
+        self.start_pt_label.setObjectName("start_pt_label")
+        self.gridLayout.addWidget(self.start_pt_label, 4, 0, 1, 1)
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.stop_pt = QtWidgets.QSpinBox(self.acq_tab)
@@ -284,29 +259,29 @@ class Ui_MainWindow(object):
         self.stop_pt_checkbox.setObjectName("stop_pt_checkbox")
         self.horizontalLayout_4.addWidget(self.stop_pt_checkbox)
         self.gridLayout.addLayout(self.horizontalLayout_4, 5, 1, 1, 1)
+        self.start_pt = QtWidgets.QSpinBox(self.acq_tab)
+        self.start_pt.setMinimum(1)
+        self.start_pt.setMaximum(249999)
+        self.start_pt.setObjectName("start_pt")
+        self.gridLayout.addWidget(self.start_pt, 4, 1, 1, 1)
+        self.dark_curr_checkbox = QtWidgets.QCheckBox(self.acq_tab)
+        self.dark_curr_checkbox.setObjectName("dark_curr_checkbox")
+        self.gridLayout.addWidget(self.dark_curr_checkbox, 6, 1, 1, 1)
         self.horizontalLayout_2.addLayout(self.gridLayout)
-        spacerItem = QtWidgets.QSpacerItem(
-            200, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem = QtWidgets.QSpacerItem(200, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.verticalLayout_9.addLayout(self.horizontalLayout_2)
-        spacerItem1 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_9.addItem(spacerItem1)
         self.tabs.addTab(self.acq_tab, "")
         self.horizontalLayout.addWidget(self.tabs)
         self.verticalLayout_5 = QtWidgets.QVBoxLayout()
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.measurement_counter_label = QtWidgets.QLabel(self.centralwidget)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed
-        )
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.measurement_counter_label.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.measurement_counter_label.sizePolicy().hasHeightForWidth())
         self.measurement_counter_label.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setPointSize(14)
@@ -322,9 +297,7 @@ class Ui_MainWindow(object):
         self.stop_btn = QtWidgets.QPushButton(self.centralwidget)
         self.stop_btn.setObjectName("stop_btn")
         self.verticalLayout_5.addWidget(self.stop_btn)
-        spacerItem2 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
+        spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_5.addItem(spacerItem2)
         self.horizontalLayout.addLayout(self.verticalLayout_5)
         self.verticalLayout_6.addLayout(self.horizontalLayout)
@@ -340,93 +313,63 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.tabs.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        MainWindow.setTabOrder(self.tabs, self.start_btn)
+        MainWindow.setTabOrder(self.start_btn, self.stop_btn)
+        MainWindow.setTabOrder(self.stop_btn, self.scrollArea)
+        MainWindow.setTabOrder(self.scrollArea, self.live_par_graph)
+        MainWindow.setTabOrder(self.live_par_graph, self.live_perp_graph)
+        MainWindow.setTabOrder(self.live_perp_graph, self.live_ref_graph)
+        MainWindow.setTabOrder(self.live_ref_graph, self.live_da_par_graph)
+        MainWindow.setTabOrder(self.live_da_par_graph, self.live_da_perp_graph)
+        MainWindow.setTabOrder(self.live_da_perp_graph, self.live_da_cd_graph)
+        MainWindow.setTabOrder(self.live_da_cd_graph, self.scrollArea_2)
+        MainWindow.setTabOrder(self.scrollArea_2, self.avg_da_par_graph)
+        MainWindow.setTabOrder(self.avg_da_par_graph, self.avg_da_perp_graph)
+        MainWindow.setTabOrder(self.avg_da_perp_graph, self.avg_da_cd_graph)
+        MainWindow.setTabOrder(self.avg_da_cd_graph, self.instr_name)
+        MainWindow.setTabOrder(self.instr_name, self.measurements)
+        MainWindow.setTabOrder(self.measurements, self.save_data_checkbox)
+        MainWindow.setTabOrder(self.save_data_checkbox, self.save_loc)
+        MainWindow.setTabOrder(self.save_loc, self.save_loc_browse_btn)
+        MainWindow.setTabOrder(self.save_loc_browse_btn, self.start_pt)
+        MainWindow.setTabOrder(self.start_pt, self.stop_pt)
+        MainWindow.setTabOrder(self.stop_pt, self.stop_pt_checkbox)
+        MainWindow.setTabOrder(self.stop_pt_checkbox, self.dark_curr_checkbox)
+        MainWindow.setTabOrder(self.dark_curr_checkbox, self.dark_curr_par)
+        MainWindow.setTabOrder(self.dark_curr_par, self.dark_curr_perp)
+        MainWindow.setTabOrder(self.dark_curr_perp, self.dark_curr_ref)
+        MainWindow.setTabOrder(self.dark_curr_ref, self.reset_avg_btn)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(
-            QtWidgets.QApplication.translate("MainWindow", "MainWindow", None, -1)
-        )
-        self.live_par_label.setText(
-            QtWidgets.QApplication.translate("MainWindow", "Parallel", None, -1)
-        )
-        self.live_perp_label.setText(
-            QtWidgets.QApplication.translate("MainWindow", "Perpendicular", None, -1)
-        )
-        self.live_ref_label.setText(
-            QtWidgets.QApplication.translate("MainWindow", "Reference", None, -1)
-        )
-        self.live_par_da_label.setText(
-            QtWidgets.QApplication.translate("MainWindow", "Parallel - dA", None, -1)
-        )
-        self.live_perp_da_label.setText(
-            QtWidgets.QApplication.translate(
-                "MainWindow", "Perpendicular - dA", None, -1
-            )
-        )
-        self.live_cd_label.setText(
-            QtWidgets.QApplication.translate("MainWindow", "CD", None, -1)
-        )
-        self.tabs.setTabText(
-            self.tabs.indexOf(self.live_tab),
-            QtWidgets.QApplication.translate("MainWindow", "Live", None, -1),
-        )
-        self.avg_da_par_label.setText(
-            QtWidgets.QApplication.translate("MainWindow", "Parallel", None, -1)
-        )
-        self.avg_da_perp_label.setText(
-            QtWidgets.QApplication.translate("MainWindow", "Perpendicular", None, -1)
-        )
-        self.avg_da_cd_label.setText(
-            QtWidgets.QApplication.translate("MainWindow", "CD", None, -1)
-        )
-        self.tabs.setTabText(
-            self.tabs.indexOf(self.average_tab),
-            QtWidgets.QApplication.translate("MainWindow", "Average", None, -1),
-        )
-        self.instr_name.setText(
-            QtWidgets.QApplication.translate(
-                "MainWindow", "TCPIP::192.168.20.4::gpib0,1::INSTR", None, -1
-            )
-        )
-        self.label_2.setText(
-            QtWidgets.QApplication.translate("MainWindow", "Save Location", None, -1)
-        )
-        self.label.setText(
-            QtWidgets.QApplication.translate("MainWindow", "Save Data", None, -1)
-        )
-        self.reset_avg_btn.setText(
-            QtWidgets.QApplication.translate("MainWindow", "Reset Averages", None, -1)
-        )
-        self.measurements_label.setText(
-            QtWidgets.QApplication.translate("MainWindow", "Measurements", None, -1)
-        )
-        self.instr_name_label.setText(
-            QtWidgets.QApplication.translate("MainWindow", "Instrument Name", None, -1)
-        )
-        self.save_loc_browse_btn.setText(
-            QtWidgets.QApplication.translate("MainWindow", "Browse", None, -1)
-        )
-        self.start_pt_label.setText(
-            QtWidgets.QApplication.translate("MainWindow", "Start Point", None, -1)
-        )
-        self.stop_pt_label.setText(
-            QtWidgets.QApplication.translate("MainWindow", "Stop Point", None, -1)
-        )
-        self.stop_pt_checkbox.setText(
-            QtWidgets.QApplication.translate("MainWindow", "Last", None, -1)
-        )
-        self.tabs.setTabText(
-            self.tabs.indexOf(self.acq_tab),
-            QtWidgets.QApplication.translate("MainWindow", "Acquisition", None, -1),
-        )
-        self.measurement_counter_label.setText(
-            QtWidgets.QApplication.translate("MainWindow", "0/0", None, -1)
-        )
-        self.start_btn.setText(
-            QtWidgets.QApplication.translate("MainWindow", "Start", None, -1)
-        )
-        self.stop_btn.setText(
-            QtWidgets.QApplication.translate("MainWindow", "Stop", None, -1)
-        )
-
+        MainWindow.setWindowTitle(QtWidgets.QApplication.translate("MainWindow", "MainWindow", None, -1))
+        self.live_par_label.setText(QtWidgets.QApplication.translate("MainWindow", "Parallel", None, -1))
+        self.live_perp_label.setText(QtWidgets.QApplication.translate("MainWindow", "Perpendicular", None, -1))
+        self.live_ref_label.setText(QtWidgets.QApplication.translate("MainWindow", "Reference", None, -1))
+        self.live_par_da_label.setText(QtWidgets.QApplication.translate("MainWindow", "Parallel - dA", None, -1))
+        self.live_perp_da_label.setText(QtWidgets.QApplication.translate("MainWindow", "Perpendicular - dA", None, -1))
+        self.live_cd_label.setText(QtWidgets.QApplication.translate("MainWindow", "CD", None, -1))
+        self.tabs.setTabText(self.tabs.indexOf(self.live_tab), QtWidgets.QApplication.translate("MainWindow", "Live", None, -1))
+        self.avg_da_par_label.setText(QtWidgets.QApplication.translate("MainWindow", "Parallel", None, -1))
+        self.avg_da_perp_label.setText(QtWidgets.QApplication.translate("MainWindow", "Perpendicular", None, -1))
+        self.avg_da_cd_label.setText(QtWidgets.QApplication.translate("MainWindow", "CD", None, -1))
+        self.tabs.setTabText(self.tabs.indexOf(self.average_tab), QtWidgets.QApplication.translate("MainWindow", "Average", None, -1))
+        self.dark_curr_ref_checkbox.setText(QtWidgets.QApplication.translate("MainWindow", "Reference", None, -1))
+        self.instr_name.setText(QtWidgets.QApplication.translate("MainWindow", "TCPIP::192.168.20.4::gpib0,1::INSTR", None, -1))
+        self.save_loc_label.setText(QtWidgets.QApplication.translate("MainWindow", "Save Location", None, -1))
+        self.save_data_label.setText(QtWidgets.QApplication.translate("MainWindow", "Save Data", None, -1))
+        self.reset_avg_btn.setText(QtWidgets.QApplication.translate("MainWindow", "Reset Averages", None, -1))
+        self.measurements_label.setText(QtWidgets.QApplication.translate("MainWindow", "Measurements", None, -1))
+        self.instr_name_label.setText(QtWidgets.QApplication.translate("MainWindow", "Instrument Name", None, -1))
+        self.save_loc_browse_btn.setText(QtWidgets.QApplication.translate("MainWindow", "Browse", None, -1))
+        self.dark_curr_par_label.setText(QtWidgets.QApplication.translate("MainWindow", "Parallel", None, -1))
+        self.dark_curr_perp_label.setText(QtWidgets.QApplication.translate("MainWindow", "Perpendicular", None, -1))
+        self.stop_pt_label.setText(QtWidgets.QApplication.translate("MainWindow", "Stop Point", None, -1))
+        self.start_pt_label.setText(QtWidgets.QApplication.translate("MainWindow", "Start Point", None, -1))
+        self.stop_pt_checkbox.setText(QtWidgets.QApplication.translate("MainWindow", "Last", None, -1))
+        self.dark_curr_checkbox.setText(QtWidgets.QApplication.translate("MainWindow", "Dark Current (V)", None, -1))
+        self.tabs.setTabText(self.tabs.indexOf(self.acq_tab), QtWidgets.QApplication.translate("MainWindow", "Acquisition", None, -1))
+        self.measurement_counter_label.setText(QtWidgets.QApplication.translate("MainWindow", "0/0", None, -1))
+        self.start_btn.setText(QtWidgets.QApplication.translate("MainWindow", "Start", None, -1))
+        self.stop_btn.setText(QtWidgets.QApplication.translate("MainWindow", "Stop", None, -1))
 
 from pyqtgraph import PlotWidget

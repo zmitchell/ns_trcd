@@ -45,20 +45,20 @@ class ComputationWorker(QObject):
     worker.
     """
 
-    def __init__(self, mutex, num_measurements, save, save_dir=None):
+    def __init__(self, mutex, ui_settings):
         super(ComputationWorker, self).__init__()
         self.mutex = mutex
         self.signals = ComputationSignals()
-        self.save = save
-        if save:
-            self.save_dir = Path(save_dir)
+        self.save = ui_settings.save
+        if self.save:
+            self.save_dir = Path(ui_settings.save_dir)
             self._clear_save_dir()
         else:
             self.save_dir = None
         self.count = 0
         self.average_count = 0
         self.should_reset_averages = False
-        self.max_measurements = num_measurements
+        self.max_measurements = ui_settings.num_measurements
         self.avg_da_par = np.zeros(POINTS)
         self.avg_da_perp = np.zeros(POINTS)
         self.avg_da_cd = np.zeros(POINTS)
@@ -73,6 +73,9 @@ class ComputationWorker(QObject):
         self.v_scale_perp = None
         self.v_scale_ref = None
         self.v_scale_shutter = None
+        self.dark_curr_par = ui_settings.dark_curr_par
+        self.dark_curr_perp = ui_settings.dark_curr_perp
+        self.dark_curr_ref = ui_settings.dark_curr_ref
 
     @Slot(Preamble)
     def store_preamble(self, preamble):
@@ -117,6 +120,12 @@ class ComputationWorker(QObject):
         par = data.par * self.v_scale_par + self.v_offset_par
         perp = data.perp * self.v_scale_perp + self.v_offset_perp
         ref = data.ref * self.v_scale_ref + self.v_offset_ref
+        if self.dark_curr_par is not None:
+            par -= self.dark_curr_par
+        if self.dark_curr_perp is not None:
+            perp -= self.dark_curr_perp
+        if self.dark_curr_ref is not None:
+            ref -= self.dark_curr_ref
         if data.has_pump:
             self.with_pump = MeasurementData(par, perp, ref)
         else:
@@ -167,8 +176,8 @@ class ComputationWorker(QObject):
                         np.divide(self.without_pump.perp, self.without_pump.ref),
                     )
                 )
-            except FloatingPointError:
-                print("err")
+            except FloatingPointError as e:
+                print(e)
                 self.with_pump.ref[self.with_pump.ref == 0] = 1e-12
                 self.without_pump.ref[self.without_pump.ref == 0] = 1e-12
                 da_par = -np.log10(

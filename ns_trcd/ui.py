@@ -4,7 +4,7 @@ from pyqtgraph import ViewBox
 from PySide2.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 from PySide2.QtCore import QObject, QThread, Signal, Slot, QMutex
 from . import common
-from .common import PlotData
+from .common import PlotData, UiSettings
 from .comp_worker import ComputationWorker
 from .exp_worker import ExperimentWorker
 from .generated_ui import Ui_MainWindow
@@ -51,7 +51,10 @@ class MainWindow(QMainWindow):
         # Save data controls
         self.ui.save_data_checkbox.stateChanged.connect(self.save_loc_set_state)
         self.ui.save_loc_browse_btn.clicked.connect(self.get_save_location)
+        # Start/Stop point
         self.ui.stop_pt_checkbox.stateChanged.connect(self.stop_pt_set_state)
+        # Dark current
+        self.ui.dark_curr_checkbox.stateChanged.connect(self.dark_curr_set_state)
 
     def closeEvent(self, event):
         """Clean up worker threads if the window is closed while collecting data.
@@ -128,37 +131,11 @@ class MainWindow(QMainWindow):
     def start_collecting(self):
         """Begins collecting data when the "Start" button is pressed.
         """
-        should_save = self.ui.save_data_checkbox.isChecked()
-        if should_save and not self._saving_should_proceed():
+        settings, should_quit = self._collect_settings()
+        if should_quit:
             return
-        common.SHOULD_STOP = False
-        if should_save:
-            self.comp_worker = ComputationWorker(
-                self.mutex,
-                self.ui.measurements.value(),
-                save=True,
-                save_dir=self.save_data_dir,
-            )
-        else:
-            self.comp_worker = ComputationWorker(
-                self.mutex, self.ui.measurements.value(), save=False
-            )
-        start_pt = self.ui.start_pt.value()
-        if self.ui.stop_pt_checkbox.isChecked():
-            self.exp_worker = ExperimentWorker(
-                self.mutex, self.ui.instr_name.text(), start_pt=start_pt
-            )
-        else:
-            stop_pt = self.ui.stop_pt.value()
-            if start_pt >= stop_pt:
-                self._tell_start_greater_than_stop()
-                return
-            self.exp_worker = ExperimentWorker(
-                self.mutex,
-                self.ui.instr_name.text(),
-                start_pt=start_pt,
-                stop_pt=stop_pt,
-            )
+        self.comp_worker = ComputationWorker(self.mutex, settings)
+        self.exp_worker = ExperimentWorker(self.mutex, settings)
         self._connect_worker_signals()
         self.comp_worker.moveToThread(self.comp_thread)
         self.exp_worker.moveToThread(self.exp_thread)
@@ -166,6 +143,82 @@ class MainWindow(QMainWindow):
         self.exp_thread.start()
         self.signals.measure.emit()
         self._disable_acq_controls()
+
+    def _collect_settings(self):
+        """Collect all the settings from the UI.
+        """
+        settings = UiSettings()
+        settings, should_quit = self._collect_meas_settings(settings)
+        if should_quit:
+            return settings, should_quit
+        settings, should_quit = self._collect_instr_settings(settings)
+        if should_quit:
+            return settings, should_quit
+        settings, should_quit = self._collect_save_settings(settings)
+        if should_quit:
+            return settings, should_quit
+        settings, should_quit = self._collect_start_stop_settings(settings)
+        if should_quit:
+            return settings, should_quit
+        settings, should_quit = self._collect_dark_curr_settings(settings)
+        return settings, should_quit
+
+    def _collect_dark_curr_settings(self, settings):
+        quit = False
+        use_dark_curr = self.ui.dark_curr_checkbox.isChecked()
+        if not use_dark_curr:
+            return settings, quit
+        try:
+            dark_curr_par = float(self.ui.dark_curr_par.text())
+            dark_curr_perp = float(self.ui.dark_curr_perp.text())
+            dark_curr_ref = float(self.ui.dark_curr_ref.text())
+            settings.dark_curr_par = dark_curr_par
+            settings.dark_curr_perp = dark_curr_perp
+            settings.dark_curr_ref = dark_curr_ref
+        except ValueError:
+            quit = True
+        return settings, quit
+
+    def _collect_meas_settings(self, settings):
+        """Collect the number of measurements from the UI.
+        """
+        quit = False
+        settings.num_measurements = self.ui.measurements.value()
+        return settings, quit
+
+    def _collect_instr_settings(self, settings):
+        """Collect the settings from the UI related to the instrument.
+        """
+        quit = False
+        instr_name = self.ui.instr_name.text()
+        if instr_name == "":
+            quit = True
+        settings.instr_name = instr_name
+        return settings, quit
+
+    def _collect_save_settings(self, settings):
+        """Collect the settings from the UI related to saving data.
+        """
+        quit = False
+        should_save = self.ui.save_data_checkbox.isChecked()
+        if should_save and not self._saving_should_proceed():
+            settings.save = should_save
+            quit = True
+        return settings, quit
+
+    def _collect_start_stop_settings(self, settings):
+        """Collect the settings from the UI related to the Start/Stop points.
+        """
+        quit = False
+        start_pt = self.ui.start_pt.value()
+        settings.start_pt = start_pt
+        if not self.ui.stop_pt_checkbox.isChecked():
+            stop_pt = self.ui.stop_pt.value()
+            settings.stop_pt = stop_pt
+            if start_pt >= stop_pt:
+                self._tell_start_greater_than_stop()
+                quit = True
+        return settings, quit
 
     def _connect_worker_signals(self):
         """Connect signals for communication between workers and the main window.
@@ -369,3 +422,26 @@ class MainWindow(QMainWindow):
             "The Start point must be less than the Stop point.",
             QMessageBox.StandardButton.Ok,
         )
+
+    @Slot(int)
+    def dark_curr_set_state(self, state):
+        """Enable or disable the dark current controls in response to the checkbox.
+
+        Parameters
+        ----------
+        state : int
+            An integer representing the state of the checkbox.
+
+        Notes
+        -----
+            0 - unchecked
+            2 - checked
+        """
+        if state == 0:
+            self.ui.dark_curr_par.setDisabled(True)
+            self.ui.dark_curr_perp.setDisabled(True)
+            self.ui.dark_curr_ref.setDisabled(True)
+        elif state == 2:
+            self.ui.dark_curr_par.setEnabled(True)
+            self.ui.dark_curr_perp.setEnabled(True)
+            self.ui.dark_curr_ref.setEnabled(True)

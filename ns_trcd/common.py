@@ -53,3 +53,18 @@ class Preamble:
     v_scale_ref: float
     v_offset_ref: float
     points: int
+
+
+@dataclass
+class UiSettings:
+    """Settings provided by the user via the UI.
+    """
+    start_pt: Union[int, None] = None
+    stop_pt: Union[int, None] = None
+    instr_name: Union[str, None] = None
+    dark_curr_par: Union[float, None] = None
+    dark_curr_perp: Union[float, None] = None
+    dark_curr_ref: Union[float, None] = None
+    num_measurements: int = 5
+    save: bool = False
+    save_loc: Union[str, None] = None
