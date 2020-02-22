@@ -11,6 +11,7 @@ pyside2 = { url = "https://download.qt.io/snapshots/ci/pyside/5.12.6/latest/pysi
 shiboken2 = { url = "https://download.qt.io/snapshots/ci/pyside/5.12.6/latest/pyside2/shiboken2-5.12.6-5.12.6-cp35.cp36.cp37-none-win_amd64.whl"}
 shiboken2_generator = { url = "https://download.qt.io/snapshots/ci/pyside/5.12.6/latest/pyside2/shiboken2_generator-5.12.6-5.12.6-cp35.cp36.cp37-none-win_amd64.whl"}
 pyvisa = "^1.10.1"
+pyserial = "^3.4"
 
 [tool.poetry.dev-dependencies]
 

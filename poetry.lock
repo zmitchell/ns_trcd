@@ -19,6 +19,14 @@ numpy = ">=1.8.0"
 
 [[package]]
 category = "main"
+description = "Python Serial Port Extension"
+name = "pyserial"
+optional = false
+python-versions = "*"
+version = "3.4"
+
+[[package]]
+category = "main"
 description = "Python bindings for the Qt cross-platform application and UI framework"
 name = "PySide2"
 optional = false
@@ -32,6 +40,15 @@ shiboken2 = "5.12.6"
 reference = ""
 type = "url"
 url = "https://download.qt.io/snapshots/ci/pyside/5.12.6/latest/pyside2/PySide2-5.12.6-5.12.6-cp35.cp36.cp37-none-win_amd64.whl"
+
+[[package]]
+category = "main"
+description = "Python VISA bindings for GPIB, RS232, TCPIP and USB instruments"
+name = "pyvisa"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "1.10.1"
+
 [[package]]
 category = "main"
 description = "Python / C++ bindings helper module"
@@ -44,6 +61,7 @@ version = "5.12.6"
 reference = ""
 type = "url"
 url = "https://download.qt.io/snapshots/ci/pyside/5.12.6/latest/pyside2/shiboken2-5.12.6-5.12.6-cp35.cp36.cp37-none-win_amd64.whl"
+
 [[package]]
 category = "main"
 description = "Python / C++ bindings generator"
@@ -59,8 +77,9 @@ shiboken2 = "5.12.6"
 reference = ""
 type = "url"
 url = "https://download.qt.io/snapshots/ci/pyside/5.12.6/latest/pyside2/shiboken2_generator-5.12.6-5.12.6-cp35.cp36.cp37-none-win_amd64.whl"
+
 [metadata]
-content-hash = "7a1b4095b4ca7dda0577fef6b9a37654718cce4433fbbf5715a6b268ecc81a14"
+content-hash = "a78e528d50e9dd1fd0c701b4e97e705c2ac711521a35f29ebe147b0a85d94ba2"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -92,6 +111,13 @@ pyqtgraph = [
     {file = "pyqtgraph-0.11.0rc0-py3-none-any.whl", hash = "sha256:6197b827df7d70a8ed329e7e7736900f5235d29e0585b2a3ea5132bff454593a"},
     {file = "pyqtgraph-0.11.0rc0.tar.gz", hash = "sha256:556a09aeafea537b9dd7e199bc5a6f05cea4ffee8aaf5a75f90aafeabe70155d"},
 ]
+pyserial = [
+    {file = "pyserial-3.4-py2.py3-none-any.whl", hash = "sha256:e0770fadba80c31013896c7e6ef703f72e7834965954a78e71a3049488d4d7d8"},
+    {file = "pyserial-3.4.tar.gz", hash = "sha256:6e2d401fdee0eab996cf734e67773a0143b932772ca8b42451440cfed942c627"},
+]
 PySide2 = []
+pyvisa = [
+    {file = "PyVISA-1.10.1.tar.gz", hash = "sha256:ba936e2943ae29d7e33c3df00077d554c6137b02d097457ed4f36d77977e3293"},
+]
 shiboken2 = []
 shiboken2-generator = []
