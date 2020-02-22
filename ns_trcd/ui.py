@@ -202,8 +202,9 @@ class MainWindow(QMainWindow):
         quit = False
         should_save = self.ui.save_data_checkbox.isChecked()
         if should_save and not self._saving_should_proceed():
-            settings.save = should_save
             quit = True
+        settings.save = should_save
+        settings.save_loc = self.ui.save_loc.text()
         return settings, quit
 
     def _collect_start_stop_settings(self, settings):

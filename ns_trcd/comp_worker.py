@@ -51,7 +51,7 @@ class ComputationWorker(QObject):
         self.signals = ComputationSignals()
         self.save = ui_settings.save
         if self.save:
-            self.save_dir = Path(ui_settings.save_dir)
+            self.save_dir = Path(ui_settings.save_loc)
             self._clear_save_dir()
         else:
             self.save_dir = None
