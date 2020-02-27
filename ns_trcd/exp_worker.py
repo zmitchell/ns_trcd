@@ -1,5 +1,5 @@
 import structlog
-import sys
+from serial import Serial, SerialException
 from pyvisa.errors import VisaIOError
 from PySide2.QtCore import QObject, Signal, Slot
 from . import common
@@ -50,10 +50,11 @@ class ExperimentWorker(QObject):
         try:
             self._scope = Oscilloscope(ui_settings.instr_name)
             log.debug("oscilloscope connected")
-            traceback.print_exc()
-            exctype, excvalue = sys.exc_info()[:2]
-            self.signals.error.emit((exctype, excvalue, traceback.format_exc()))
-        except VisaIOError as e:
+            self._shutter = Serial("COM4", baudrate=9_600, timeout=1)
+            log.debug("arduino connected")
+            state = self._shutter.read(4)
+            log.debug(f"state: {state}")
+        except (VisaIOError, SerialException, ValueError) as e:
             log.err(e)
             self.mutex.lock()
             log.debug("mutex locked")
@@ -123,6 +124,8 @@ class ExperimentWorker(QObject):
         log.debug("preamble sent")
         self._scope.acquisition_start()
         log.debug("oscilloscope started")
+        self._shutter.reset_input_buffer()
+        log.debug("arduino buffer cleared")
         while True:
             self.mutex.lock()
             if common.SHOULD_STOP:
@@ -130,7 +133,21 @@ class ExperimentWorker(QObject):
                 break
             self.mutex.unlock()
             if self._scope.get_trigger_state() == "ready":
-                has_pump = self._scope.get_immediate_measurement_value() > 2.5
+                log.debug("oscilloscope is ready")
+                try:
+                    state = self._shutter.read(4)
+                    log.debug("shutter", state=state)
+                except Exception as e:
+                    log.err(e)
+                # has_pump = self._scope.get_immediate_measurement_value() > 2.5
+                # log.debug("shutter", has_pump=has_pump)
+                if state == b"open":
+                    has_pump = True
+                elif state == b"shut":
+                    has_pump = False
+                else:
+                    continue
+                # has_pump = state == "open"
                 if self.prev_had_pump is None:
                     # storing the opposite of has_pump prevents skipping the first measurement
                     self.prev_had_pump = not has_pump
@@ -157,6 +174,8 @@ class ExperimentWorker(QObject):
         log.debug("oscilloscope stopped")
         self._scope.cleanup()
         log.debug("oscilloscope disconnected")
+        self._shutter.close()
+        log.debug("arduino disconnected")
         self.signals.new_data.disconnect()
         self.signals.done.emit()
         log.debug("done signal emitted")
