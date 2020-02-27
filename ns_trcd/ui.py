@@ -1,4 +1,5 @@
 import numpy as np
+import structlog
 from pathlib import Path
 from pyqtgraph import ViewBox
 from PySide2.QtWidgets import QMainWindow, QFileDialog, QMessageBox
@@ -8,6 +9,9 @@ from .common import PlotData, UiSettings
 from .comp_worker import ComputationWorker
 from .exp_worker import ExperimentWorker
 from .generated_ui import Ui_MainWindow
+
+
+logger = structlog.get_logger()
 
 
 class MainWindowSignals(QObject):
@@ -20,6 +24,8 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.signals = MainWindowSignals()
+        self._log = logger.bind(worker="main")
+        log = self._log.bind(method="__init__")
         self.save_data_dir = None
         self.current_measurement = 0
         self.max_measurements = 0
@@ -28,10 +34,15 @@ class MainWindow(QMainWindow):
         self.mutex = QMutex()
         self.comp_thread = QThread()
         self.exp_thread = QThread()
+        log.debug("threads created")
         self._connect_components()
+        log.debug("components connected")
         self._set_initial_widget_states()
+        log.debug("initial states set")
         self._store_line_objects()
+        log.debug("graph objects stored")
         self._set_plot_mouse_mode()
+        log.debug("mouse mode set")
 
     def _set_initial_widget_states(self):
         self.update_max_measurements(self.ui.measurements.value())
@@ -63,12 +74,18 @@ class MainWindow(QMainWindow):
         -----
         This overrides the default closeEvent method of QMainWindow.
         """
+        log = self._log.bind(method="closeEvent")
         if self.collecting:
+            log.debug("quitting worker threads")
             self.comp_thread.quit()
             self.exp_thread.quit()
+            log.debug("waiting computation thread")
             self.comp_thread.wait()
+            log.debug("waiting for experiment thread")
             self.exp_thread.wait()
+            log.debug("done waiting")
         event.accept()
+        log.debug("exiting application")
 
     def _store_line_objects(self):
         """Store references to the lines so the data can be updated later.
@@ -111,61 +128,84 @@ class MainWindow(QMainWindow):
 
     @Slot(np.ndarray)
     def set_time_axis(self, values):
+        log = self._log.bind(method="set_time_axis")
         self.time_axis = values * 1e6
+        log.debug("time axis constructed")
 
     @Slot(int)
     def update_max_measurements(self, x):
+        log = self._log.bind(method="update_max_measurements")
         self.max_measurements = x
         self.ui.measurement_counter_label.setText(
             f"{self.current_measurement}/{self.max_measurements}"
         )
+        log.debug(f"max measurements is now {x}")
 
     @Slot(int)
     def update_current_measurement(self, x):
+        log = self._log.bind(method="update_current_measurement")
         self.current_measurement = x
         self.ui.measurement_counter_label.setText(
             f"{self.current_measurement}/{self.max_measurements}"
         )
+        log.debug(f"measurement {x}")
 
     @Slot()
     def start_collecting(self):
         """Begins collecting data when the "Start" button is pressed.
         """
+        log = self._log.bind(method="start_collecting")
         settings, should_quit = self._collect_settings()
+        log.debug("settings collected", should_quit=should_quit, settings=settings)
         if should_quit:
+            log.debug("aborting experiment")
             return
         self.comp_worker = ComputationWorker(self.mutex, settings)
         self.exp_worker = ExperimentWorker(self.mutex, settings)
+        log.debug("workers created")
         self._connect_worker_signals()
+        log.debug("signals connected")
         self.comp_worker.moveToThread(self.comp_thread)
         self.exp_worker.moveToThread(self.exp_thread)
+        log.debug("workers moved to separate threads")
         self.comp_thread.start()
         self.exp_thread.start()
+        log.debug("worker threads started")
         self.signals.measure.emit()
+        log.debug("measure signal emitted")
         self._disable_acq_controls()
+        log.debug("controls disabled")
 
     def _collect_settings(self):
         """Collect all the settings from the UI.
         """
+        log = self._log.bind(method="_collect_settings")
         settings = UiSettings()
         settings, should_quit = self._collect_meas_settings(settings)
+        log.debug("measurement settings", settings=settings, should_quit=should_quit)
         if should_quit:
             return settings, should_quit
         settings, should_quit = self._collect_instr_settings(settings)
+        log.debug("instrument settings", settings=settings, should_quit=should_quit)
         if should_quit:
             return settings, should_quit
         settings, should_quit = self._collect_save_settings(settings)
+        log.debug("save settings", settings=settings, should_quit=should_quit)
         if should_quit:
             return settings, should_quit
         settings, should_quit = self._collect_start_stop_settings(settings)
+        log.debug("start/stop settings", settings=settings, should_quit=should_quit)
         if should_quit:
             return settings, should_quit
         settings, should_quit = self._collect_dark_curr_settings(settings)
+        log.debug("dark current settings", settings=settings, should_quit=should_quit)
         return settings, should_quit
 
     def _collect_dark_curr_settings(self, settings):
+        log = self._log.bind(method="_collect_dark_curr_settings")
         quit = False
         use_dark_curr = self.ui.dark_curr_checkbox.isChecked()
+        log.debug("dark current checkbox", checked=use_dark_curr)
         if not use_dark_curr:
             return settings, quit
         try:
@@ -199,8 +239,10 @@ class MainWindow(QMainWindow):
     def _collect_save_settings(self, settings):
         """Collect the settings from the UI related to saving data.
         """
+        log = self._log.bind(method="_collect_save_settings")
         quit = False
         should_save = self.ui.save_data_checkbox.isChecked()
+        log.debug("save checkbox", checked=should_save)
         if should_save and not self._saving_should_proceed():
             quit = True
         settings.save = should_save
@@ -275,32 +317,51 @@ class MainWindow(QMainWindow):
     def stop_collecting(self):
         """Stops collecting data when the "Stop" button is pressed.
         """
+        log = self._log.bind(method="stop_collecting")
+        log.debug("stop button clicked")
         self.mutex.lock()
+        log.debug("mutex locked")
         common.SHOULD_STOP = True
         self.mutex.unlock()
+        log.debug("mutex unlocked")
+        log.debug("quitting worker threads")
         self.comp_thread.quit()
         self.exp_thread.quit()
+        log.debug("waiting for computation thread")
         self.comp_thread.wait()
+        log.debug("waiting for experiment thread")
         self.exp_thread.wait()
+        log.debug("done waiting")
         self._enable_acq_controls()
+        log.debug("controls enabled")
         self.current_measurement = 0
 
     @Slot()
     def cleanup_when_done(self):
         """Clean up workers and threads after data collection is complete.
         """
+        log = self._log.bind(method="cleanup_when_done")
+        log.debug("quitting worker threads")
         self.comp_thread.quit()
         self.exp_thread.quit()
+        log.debug("waiting for computation thread")
         self.comp_thread.wait()
+        log.debug("waiting for experiment thread")
         self.exp_thread.wait()
+        log.debug("done waiting")
         self.mutex.lock()
+        log.debug("mutex locked")
         common.SHOULD_STOP = False
         self.mutex.unlock()
+        log.debug("mutex unlocked")
         self._enable_acq_controls()
+        log.debug("controls enabled")
         self.current_measurement = 0
+        log.debug("presenting dialog")
         QMessageBox.information(
             self, "Done", "The experiment has finished.", QMessageBox.StandardButton.Ok
         )
+        log.debug("dialog dismissed")
 
     @Slot(PlotData)
     def update_plots(self, data):
@@ -311,9 +372,11 @@ class MainWindow(QMainWindow):
         data : PlotData
             Three live data channels and the signals computed from them.
         """
+        log = self._log.bind(method="update_plots")
         self.live_par_line.setData(self.time_axis, data.par)
         self.live_perp_line.setData(self.time_axis, data.perp)
         self.live_ref_line.setData(self.time_axis, data.ref)
+        log.debug("raw signals updated")
         if data.da_par is not None:
             self.live_da_par_line.setData(self.time_axis, data.da_par)
             self.live_da_perp_line.setData(self.time_axis, data.da_perp)
@@ -321,6 +384,7 @@ class MainWindow(QMainWindow):
             self.avg_da_par_line.setData(self.time_axis, data.avg_da_par)
             self.avg_da_perp_line.setData(self.time_axis, data.avg_da_perp)
             self.avg_da_cd_line.setData(self.time_axis, data.avg_da_cd)
+            log.debug("da signals updated")
 
     @Slot(int)
     def save_loc_set_state(self, state):
@@ -336,12 +400,15 @@ class MainWindow(QMainWindow):
             0 - unchecked
             2 - checked
         """
+        log = self._log.bind(method="save_loc_set_state", state=state)
         if state == 0:
             self.ui.save_loc.setDisabled(True)
             self.ui.save_loc_browse_btn.setDisabled(True)
+            log.debug("save data disabled")
         elif state == 2:
             self.ui.save_loc.setEnabled(True)
             self.ui.save_loc_browse_btn.setEnabled(True)
+            log.debug("save data enabled")
 
     @Slot()
     def get_save_location(self):
@@ -383,14 +450,20 @@ class MainWindow(QMainWindow):
         return reply == QMessageBox.StandardButton.Ok
 
     def _saving_should_proceed(self):
+        """Determine whether valid settings have been entered for saving data.
+        """
+        log = self._log.bind(method="_saving_should_proceed")
         try:
             loc_is_valid = self._save_loc_still_valid()
+            log.debug("save location", valid=loc_is_valid)
         except TypeError:
             loc_is_valid = False
+            log.debug("save location", valid=loc_is_valid)
         if not loc_is_valid:
             self._tell_save_loc_is_invalid()
             return False
         would_overwrite = self._save_would_overwrite()
+        log.debug("overwrite", would_overwrite=would_overwrite)
         if would_overwrite and (not self._should_overwrite()):
             return False
         return True
@@ -409,10 +482,13 @@ class MainWindow(QMainWindow):
             0 - unchecked
             2 - checked
         """
+        log = self._log.bind(method="stop_pt_set_state", state=state)
         if state == 2:
             self.ui.stop_pt.setDisabled(True)
+            log.debug("disabled")
         elif state == 0:
             self.ui.stop_pt.setEnabled(True)
+            log.debug("enabled")
 
     def _tell_start_greater_than_stop(self):
         """Tell the user that the current save location isn't valid or doesn't exist.
@@ -438,11 +514,14 @@ class MainWindow(QMainWindow):
             0 - unchecked
             2 - checked
         """
+        log = self._log.bind(method="_collect_settings", state=state)
         if state == 0:
             self.ui.dark_curr_par.setDisabled(True)
             self.ui.dark_curr_perp.setDisabled(True)
             self.ui.dark_curr_ref.setDisabled(True)
+            log.debug("disabled")
         elif state == 2:
             self.ui.dark_curr_par.setEnabled(True)
             self.ui.dark_curr_perp.setEnabled(True)
             self.ui.dark_curr_ref.setEnabled(True)
+            log.debug("enabled")

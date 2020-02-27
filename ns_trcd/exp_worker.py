@@ -1,10 +1,13 @@
-import traceback
+import structlog
 import sys
 from pyvisa.errors import VisaIOError
 from PySide2.QtCore import QObject, Signal, Slot
 from . import common
 from .common import RawData, Preamble
 from .oscilloscope import Oscilloscope
+
+
+logger = structlog.get_logger()
 
 
 class ExperimentSignals(QObject):
@@ -39,20 +42,28 @@ class ExperimentWorker(QObject):
         super(ExperimentWorker, self).__init__()
         self.mutex = mutex
         self.signals = ExperimentSignals()
+        self._log = logger.bind(worker="experiment")
+        log = self._log.bind(method="__init__")
         self.prev_had_pump = None
         self.start_pt = ui_settings.start_pt
         self.stop_pt = ui_settings.stop_pt
         try:
             self._scope = Oscilloscope(ui_settings.instr_name)
-        except VisaIOError:
+            log.debug("oscilloscope connected")
             traceback.print_exc()
             exctype, excvalue = sys.exc_info()[:2]
             self.signals.error.emit((exctype, excvalue, traceback.format_exc()))
+        except VisaIOError as e:
+            log.err(e)
             self.mutex.lock()
+            log.debug("mutex locked")
             common.SHOULD_STOP = True
             self.mutex.unlock()
+            log.debug("mutex unlocked")
 
     def _ensure_basic_settings(self):
+        """Ensure that a few settings always have default values.
+        """
         self._scope.set_hi_res_mode()
         self._scope.set_continuous_acquisition_mode()
         self._scope.set_waveform_data_source_single_channel(1)
@@ -67,6 +78,8 @@ class ExperimentWorker(QObject):
             self._scope.set_waveform_stop_point(self.stop_pt)
 
     def _send_preamble(self):
+        """Send the data needed to reconstruct signals from the oscilloscope.
+        """
         time_res = self._scope.get_time_resolution()
         self._scope.set_waveform_data_source_single_channel(1)
         v_scale_par = self._scope.get_voltage_scale_factor()
@@ -92,13 +105,24 @@ class ExperimentWorker(QObject):
 
     @Slot()
     def measure(self):
+        """Collect a measurement from the oscilloscope.
+        """
+        log = self._log.bind(method="measure")
         self.mutex.lock()
+        log.debug("mutex locked")
         if common.SHOULD_STOP:
+            self.mutex.unlock()
+            log.debug("mutex unlocked")
+            log.debug("aborting measurement")
             return
         self.mutex.unlock()
+        log.debug("mutex unlocked")
         self._ensure_basic_settings()
+        log.debug("basic settings set")
         self._send_preamble()
+        log.debug("preamble sent")
         self._scope.acquisition_start()
+        log.debug("oscilloscope started")
         while True:
             self.mutex.lock()
             if common.SHOULD_STOP:
@@ -108,12 +132,17 @@ class ExperimentWorker(QObject):
             if self._scope.get_trigger_state() == "ready":
                 has_pump = self._scope.get_immediate_measurement_value() > 2.5
                 if self.prev_had_pump is None:
+                    # storing the opposite of has_pump prevents skipping the first measurement
                     self.prev_had_pump = not has_pump
+                    log.debug("stored initial pump state", prev_had_pump=(not has_pump))
                 if has_pump and self.prev_had_pump:
+                    log.debug("skipping two successive pumps")
                     continue
                 elif (not has_pump) and (not self.prev_had_pump):
+                    log.debug("skipping two successive no-pumps")
                     continue
                 else:
+                    log.debug("collecting data from oscilloscope")
                     self._scope.set_waveform_data_source_single_channel(1)
                     par = self._scope.get_curve()
                     self._scope.set_waveform_data_source_single_channel(2)
@@ -122,8 +151,12 @@ class ExperimentWorker(QObject):
                     ref = self._scope.get_curve()
                     data = RawData(par, perp, ref, has_pump)
                     self.signals.new_data.emit(data)
+                    log.debug("new data signal emitted")
                     self.prev_had_pump = has_pump
         self._scope.acquisition_stop()
+        log.debug("oscilloscope stopped")
         self._scope.cleanup()
+        log.debug("oscilloscope disconnected")
         self.signals.new_data.disconnect()
         self.signals.done.emit()
+        log.debug("done signal emitted")
