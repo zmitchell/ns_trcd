@@ -303,8 +303,9 @@ class MainWindow(QMainWindow):
         self.ui.instr_name.setEnabled(True)
         self.ui.measurements.setEnabled(True)
         self.ui.save_data_checkbox.setEnabled(True)
-        self.ui.save_loc.setEnabled(True)
-        self.ui.save_loc_browse_btn.setEnabled(True)
+        if self.ui.save_data_checkbox.isChecked():
+            self.ui.save_loc.setEnabled(True)
+            self.ui.save_loc_browse_btn.setEnabled(True)
         self.ui.start_pt.setEnabled(True)
         self.ui.stop_pt_checkbox.setEnabled(True)
         if not self.ui.stop_pt_checkbox.isChecked():
