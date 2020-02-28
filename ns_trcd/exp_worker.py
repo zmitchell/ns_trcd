@@ -1,4 +1,4 @@
-import structlog
+# import structlog
 from serial import Serial, SerialException
 from pyvisa.errors import VisaIOError
 from PySide2.QtCore import QObject, Signal, Slot
@@ -7,7 +7,7 @@ from .common import RawData, Preamble
 from .oscilloscope import Oscilloscope
 
 
-logger = structlog.get_logger()
+# logger = structlog.get_logger()
 
 
 class ExperimentSignals(QObject):
@@ -42,25 +42,23 @@ class ExperimentWorker(QObject):
         super(ExperimentWorker, self).__init__()
         self.mutex = mutex
         self.signals = ExperimentSignals()
-        self._log = logger.bind(worker="experiment")
-        log = self._log.bind(method="__init__")
+        # self._log = logger.bind(worker="experiment")
+        # log = self._log.bind(method="__init__")
         self.prev_had_pump = None
         self.start_pt = ui_settings.start_pt
         self.stop_pt = ui_settings.stop_pt
         try:
             self._scope = Oscilloscope(ui_settings.instr_name)
-            log.debug("oscilloscope connected")
+            # log.debug("oscilloscope connected")
             self._shutter = Serial("COM4", baudrate=9_600, timeout=1)
-            log.debug("arduino connected")
-            state = self._shutter.read(4)
-            log.debug(f"state: {state}")
+            # log.debug("arduino connected")
         except (VisaIOError, SerialException, ValueError) as e:
-            log.err(e)
+            # log.err(e)
             self.mutex.lock()
-            log.debug("mutex locked")
+            # log.debug("mutex locked")
             common.SHOULD_STOP = True
             self.mutex.unlock()
-            log.debug("mutex unlocked")
+            # log.debug("mutex unlocked")
 
     def _ensure_basic_settings(self):
         """Ensure that a few settings always have default values.
@@ -108,24 +106,24 @@ class ExperimentWorker(QObject):
     def measure(self):
         """Collect a measurement from the oscilloscope.
         """
-        log = self._log.bind(method="measure")
+        # log = self._log.bind(method="measure")
         self.mutex.lock()
-        log.debug("mutex locked")
+        # log.debug("mutex locked")
         if common.SHOULD_STOP:
             self.mutex.unlock()
-            log.debug("mutex unlocked")
-            log.debug("aborting measurement")
+            # log.debug("mutex unlocked")
+            # log.debug("aborting measurement")
             return
         self.mutex.unlock()
-        log.debug("mutex unlocked")
+        # log.debug("mutex unlocked")
         self._ensure_basic_settings()
-        log.debug("basic settings set")
+        # log.debug("basic settings set")
         self._send_preamble()
-        log.debug("preamble sent")
+        # log.debug("preamble sent")
         self._scope.acquisition_start()
-        log.debug("oscilloscope started")
+        # log.debug("oscilloscope started")
         self._shutter.reset_input_buffer()
-        log.debug("arduino buffer cleared")
+        # log.debug("arduino buffer cleared")
         while True:
             self.mutex.lock()
             if common.SHOULD_STOP:
@@ -133,10 +131,10 @@ class ExperimentWorker(QObject):
                 break
             self.mutex.unlock()
             if self._scope.get_trigger_state() == "ready":
-                log.debug("oscilloscope is ready")
+                # log.debug("oscilloscope is ready")
                 try:
                     state = self._shutter.read(4)
-                    log.debug("shutter", state=state)
+                    # log.debug("shutter", state=state)
                 except Exception as e:
                     log.err(e)
                 # has_pump = self._scope.get_immediate_measurement_value() > 2.5
@@ -151,15 +149,15 @@ class ExperimentWorker(QObject):
                 if self.prev_had_pump is None:
                     # storing the opposite of has_pump prevents skipping the first measurement
                     self.prev_had_pump = not has_pump
-                    log.debug("stored initial pump state", prev_had_pump=(not has_pump))
+                    # log.debug("stored initial pump state", prev_had_pump=(not has_pump))
                 if has_pump and self.prev_had_pump:
-                    log.debug("skipping two successive pumps")
+                    # log.debug("skipping two successive pumps")
                     continue
                 elif (not has_pump) and (not self.prev_had_pump):
-                    log.debug("skipping two successive no-pumps")
+                    # log.debug("skipping two successive no-pumps")
                     continue
                 else:
-                    log.debug("collecting data from oscilloscope")
+                    # log.debug("collecting data from oscilloscope")
                     self._scope.set_waveform_data_source_single_channel(1)
                     par = self._scope.get_curve()
                     self._scope.set_waveform_data_source_single_channel(2)
@@ -168,14 +166,14 @@ class ExperimentWorker(QObject):
                     ref = self._scope.get_curve()
                     data = RawData(par, perp, ref, has_pump)
                     self.signals.new_data.emit(data)
-                    log.debug("new data signal emitted")
+                    # log.debug("new data signal emitted")
                     self.prev_had_pump = has_pump
         self._scope.acquisition_stop()
-        log.debug("oscilloscope stopped")
+        # log.debug("oscilloscope stopped")
         self._scope.cleanup()
-        log.debug("oscilloscope disconnected")
+        # log.debug("oscilloscope disconnected")
         self._shutter.close()
-        log.debug("arduino disconnected")
+        # log.debug("arduino disconnected")
         self.signals.new_data.disconnect()
         self.signals.done.emit()
-        log.debug("done signal emitted")
+        # log.debug("done signal emitted")

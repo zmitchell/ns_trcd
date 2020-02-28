@@ -1,15 +1,14 @@
 import shutil
 import numpy as np
-import structlog
 from dataclasses import dataclass
 from pathlib import Path
+from eliot import start_action, Message, Action
 from PySide2.QtCore import QObject, Signal, Slot
 from . import common
 from .common import PlotData, RawData, Preamble, POINTS
 
 
 np.seterr(invalid="raise", divide="raise")
-logger = structlog.get_logger()
 
 
 @dataclass
@@ -51,16 +50,12 @@ class ComputationWorker(QObject):
         super(ComputationWorker, self).__init__()
         self.mutex = mutex
         self.signals = ComputationSignals()
-        self._log = logger.bind(worker="computation")
-        log = self._log.bind(method="__init__")
         self.save = ui_settings.save
         if self.save:
             self.save_dir = Path(ui_settings.save_loc)
             self._clear_save_dir()
-            log.debug("save dir cleared")
         else:
             self.save_dir = None
-            log.debug("no save dir")
         self.count = 0
         self.average_count = 0
         self.should_reset_averages = False
@@ -78,7 +73,7 @@ class ComputationWorker(QObject):
         self.v_scale_par = None
         self.v_scale_perp = None
         self.v_scale_ref = None
-        self.v_scale_shutter = None
+        self.points = None
         self.dark_curr_par = ui_settings.dark_curr_par
         self.dark_curr_perp = ui_settings.dark_curr_perp
         self.dark_curr_ref = ui_settings.dark_curr_ref
@@ -93,8 +88,6 @@ class ComputationWorker(QObject):
             Contains the time resolution, vertical offset, and vertical scale factor
             needed to construct a time axis and an oscilloscope trace.
         """
-        log = self._log.bind(method="store_preamble")
-        log.debug("preamble", preamble=preamble)
         self.t_res = preamble.t_res
         self.v_offset_par = preamble.v_offset_par
         self.v_offset_perp = preamble.v_offset_perp
@@ -105,7 +98,6 @@ class ComputationWorker(QObject):
         self.points = preamble.points
         time_values = self.t_res * np.arange(self.points)
         self.signals.time_axis.emit(time_values)
-        log.debug("time axis signal emitted")
 
     @Slot(RawData)
     def compute_signals(self, data):
@@ -126,29 +118,23 @@ class ComputationWorker(QObject):
         New dA traces are only generated on every other acquisition since you
         need measurements with and without the pump in order to calculate dA.
         """
-        log = self._log.bind(method="compute_signals")
         par = data.par * self.v_scale_par + self.v_offset_par
         perp = data.perp * self.v_scale_perp + self.v_offset_perp
         ref = data.ref * self.v_scale_ref + self.v_offset_ref
         if self.dark_curr_par is not None:
             par -= self.dark_curr_par
-            log.debug("par dark current compensated")
         if self.dark_curr_perp is not None:
             perp -= self.dark_curr_perp
-            log.debug("perp dark current compensated")
         if self.dark_curr_ref is not None:
             ref -= self.dark_curr_ref
-            log.debug("ref dark current compensated")
         if data.has_pump:
             self.with_pump = MeasurementData(par, perp, ref)
         else:
             self.without_pump = MeasurementData(par, perp, ref)
-        log.debug("data stored", with_pump=data.has_pump)
         # Compute the dA signals if we have both required sets of data
         if (self.with_pump is not None) and (self.without_pump is not None):
             self.count += 1
             self.average_count += 1
-            log.debug("counts updated", count=self.count, averaged=self.average_count)
             self.signals.meas_num.emit(self.count)
             da_par, da_perp, da_cd = self.compute_da()
             self.update_averages(da_par, da_perp, da_cd)
@@ -164,28 +150,21 @@ class ComputationWorker(QObject):
                 self.avg_da_cd,
             )
             self.signals.new_data.emit(plot_data)
-            log.debug("plot data emitted")
             if self.save:
                 self._save_measurement(da_par, da_perp, da_cd)
-                log.debug("data saved")
             self.with_pump = None
             self.without_pump = None
             if self.count >= self.max_measurements:
-                log.debug("reached final measurement")
                 self.mutex.lock()
-                log.debug("mutex locked")
                 common.SHOULD_STOP = True
                 self.mutex.unlock()
-                log.debug("mutex unlocked")
         else:
             plot_data = PlotData(par, perp, ref, None, None, None, None, None, None)
             self.signals.new_data.emit(plot_data)
-            log.debug("plot data emitted")
 
     def compute_da(self):
         """Compute the dA signals from the raw detector signals.
         """
-        log = self._log.bind(method="compute_da")
         with np.errstate(all="raise"):
             try:
                 da_par = -np.log10(
@@ -201,7 +180,6 @@ class ComputationWorker(QObject):
                     )
                 )
             except FloatingPointError as e:
-                log.err(e)
                 self.with_pump.ref[self.with_pump.ref == 0] = 1e-12
                 self.without_pump.ref[self.without_pump.ref == 0] = 1e-12
                 da_par = -np.log10(
@@ -225,19 +203,16 @@ class ComputationWorker(QObject):
     def update_averages(self, par, perp, cd):
         """Update averages in place with new data.
         """
-        log = self._log.bind(method="update_averages")
         if self.count == 1:
             self.avg_da_par = par
             self.avg_da_perp = perp
             self.avg_da_cd = cd
-            log.debug("averages initialized")
         elif self.should_reset_averages:
             self.avg_da_par = par
             self.avg_da_perp = perp
             self.avg_da_cd = cd
             self.average_count = 1
             self.should_reset_averages = False
-            log.debug("averages reset")
         else:
             self.avg_da_par = (self.average_count - 1) / (
                 self.average_count
@@ -248,27 +223,21 @@ class ComputationWorker(QObject):
             self.avg_da_cd = (self.average_count - 1) / (
                 self.average_count
             ) * self.avg_da_cd + 1 / self.average_count * cd
-            log.debug("averages updated")
 
     @Slot()
     def reset_averages(self):
         """Set a trigger for the averages to be reset.
         """
-        log = self._log.bind(method="reset_averages")
         self.should_reset_averages = True
-        log.debug("reset averages trigger set")
 
     def _clear_save_dir(self):
         """Delete the contents of the save directory.
         """
-        log = self._log.bind(method="_clear_save_dir")
         for item in Path(self.save_dir).iterdir():
             if item.is_dir():
                 shutil.rmtree(item)
-                log.debug("deleted directory", item=item)
             else:
                 item.unlink()
-                log.debug("deleted file", item=item)
 
     def _save_measurement(self, da_par, da_perp, da_cd):
         """Save the signals for a single measurement in NumPy binary format.
